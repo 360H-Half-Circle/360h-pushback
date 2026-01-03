@@ -100,7 +100,6 @@ std::vector<lv_obj_t*> sawpButtons;
 
 namespace sec {
     int auton;
-    int color = RED;
 
     static void set_auto_text(lv_obj_t* button, std::string text) {
         lv_obj_t* label = lv_obj_get_child(button, 0);
@@ -309,7 +308,6 @@ namespace sec {
 
     void init(int hue, int default_auton, const char **autons){
         auton = 9;
-        color = RED;
 
         lv_scr_act();
 
