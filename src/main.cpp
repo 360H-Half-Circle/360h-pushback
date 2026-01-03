@@ -121,7 +121,7 @@ void opcontrol() {
     std::unordered_map<controller_digital_e_t, std::pair<std::function<void(bool)>, std::function<void()>>> hold_controls;
     std::unordered_set<controller_digital_e_t> held;
 
-    intake.set_anti_jam(true);
+    intake.set_anti_jam(false);
 
     hold_controls.emplace(E_CONTROLLER_DIGITAL_B, std::make_pair(
         [&](bool firstPress) {
@@ -145,13 +145,13 @@ void opcontrol() {
         [&](bool firstPress) {
             intake.bottom_forwards(127);
             // While L1 is held, top intake should brake
-            intake.top_intake.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+            // intake.top_intake.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
             intake.stop_top();
         },
         [&]() {
             intake.stop_bottom();
             // When released, stop top intake (return to coast)
-            intake.top_intake.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+            // intake.top_intake.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
             intake.stop_top();;
         }
     ));

@@ -8,6 +8,11 @@ void Intake::initialize() {
     bottom_intake.set_gearing(E_MOTOR_GEAR_BLUE);
     top_intake.set_gearing(E_MOTOR_GEAR_BLUE);
 
+    // Make "forwards" in code match physical forwards.
+    // If your intake spins the wrong way, flip these booleans.
+    bottom_intake.set_reversed(true);
+    top_intake.set_reversed(true);
+
     antijam = true;
     initialized = true;
 }
