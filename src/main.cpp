@@ -121,7 +121,7 @@ void opcontrol() {
     std::unordered_map<controller_digital_e_t, std::pair<std::function<void(bool)>, std::function<void()>>> hold_controls;
     std::unordered_set<controller_digital_e_t> held;
 
-    intake.set_anti_jam(false);
+    intake.set_anti_jam(true);
 
     hold_controls.emplace(E_CONTROLLER_DIGITAL_B, std::make_pair(
         [&](bool firstPress) {
@@ -214,6 +214,8 @@ void opcontrol() {
                 held.erase(control.first);
             }
         }
+
+        intake.update();
 
         double battery = battery_get_capacity();
 
