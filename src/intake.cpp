@@ -21,7 +21,7 @@ void Intake::initialize() {
 
 void Intake::update() {
     if (antijam) {
-        if (moving && (abs(bottom_intake.get_actual_velocity()) < 10)) {
+        if (moving && (abs(bottom_intake.get_current_draw()) > 2000)) {
             counter++;
 
             if (counter >= 5) {
