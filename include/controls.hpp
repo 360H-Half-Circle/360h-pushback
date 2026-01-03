@@ -21,4 +21,9 @@
 #define MIDGOAL_PORT 2
 #define MATCH_LOADER_PORT 1
 
+#define FRONT_DISTANCE_SENSOR 20
+#define BACK_DISTANCE_SENSOR 21
+#define LEFT_DISTANCE_SENSOR 22
+#define RIGHT_DISTANCE_SENSOR 23
+
 using namespace pros;

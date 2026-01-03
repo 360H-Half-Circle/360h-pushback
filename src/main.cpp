@@ -63,6 +63,10 @@ lemlib::Chassis chassis(drivetrain, // drivetrain settings
     sensors // odometry sensors
 );
 
+static lemlib::Chassis& getChassis() {
+    return chassis;
+}
+
 Intake& intake = Intake::getInstance();
 
 void initialize() {
