@@ -21,4 +21,4 @@ constexpr int NUM_SAMPLES = 10;                // Averages 10 values of the dist
 constexpr double MAX_VALID_DISTANCE_MM = 3000.0; // Maximum valid distance in mm
 
 double getAveragedSensorReading(pros::Distance& sensor);
-void resetRobotPos(pros::Distance& sensor, const std::string& wallAxisDirection);
+void resetRobotPos(lemlib::Chassis& chassis, pros::Distance& sensor, const std::string& wallAxisDirection);

@@ -51,7 +51,7 @@ double getAveragedSensorReading(pros::Distance& sensor) {
     return average;
 }
 
-void resetRobotPos(pros::Distance& sensor, const std::string& wallAxisDirection) {
+void resetRobotPos(lemlib::Chassis& chassis, pros::Distance& sensor, const std::string& wallAxisDirection) {
     double distance_mm = getAveragedSensorReading(sensor); // Get average distance
     if (distance_mm == PROS_ERR) {   // Check for valid averaged sensor reading
         std::cout << "[resetRobotPos] Invalid averaged reading. Aborting position reset.\n";
@@ -109,8 +109,6 @@ void resetRobotPos(pros::Distance& sensor, const std::string& wallAxisDirection)
     }
 
     std::cout << "[resetRobotPos] Calculated robot position along " << axis << ": " << robotPosition << "\n";
-
-    lemlib::Chassis& chassis = getChassis();
 
     // Get the current pose
     lemlib::Pose currentPose = chassis.getPose();

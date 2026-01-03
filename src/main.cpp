@@ -4,6 +4,8 @@
 #include "selector.hpp"
 #include <unordered_set>
 #include "intake.hpp"
+#include "autonomous.hpp"
+#include "distanceReset.hpp"
 
 #define TRACK_WIDTH 10.0
 
@@ -71,6 +73,7 @@ Intake& intake = Intake::getInstance();
 
 void initialize() {
     lcd::initialize();
+    sec::init();
 
     intake.initialize();
 
@@ -81,7 +84,18 @@ void disabled() {}
 
 void competition_initialize() {}
 
-void autonomous() {}
+void autonomous() {
+    switch (sec::auton)
+    {
+    case 0:
+        // some auto
+        auton::example_auton(chassis);
+        break;
+    
+    default:
+        break;
+    }
+}
 
 // b is wing down is matchloader 
 // tank drive
