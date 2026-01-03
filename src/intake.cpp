@@ -29,7 +29,7 @@ void Intake::update() {
                 counter = 0;
                 Task t{[&] {
                     bottom_intake.move(-127);
-                    delay(1000);
+                    delay(500);
 
                     std::cout << "[Intake] Anti-jam activated\n";
 
