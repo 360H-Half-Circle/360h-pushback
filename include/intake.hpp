@@ -45,6 +45,4 @@ private:
     int counter = 0;
     int volts = 0;
     bool moving = false;
-    pros::Mutex movingMutex {};
-    pros::Mutex voltsMutex {}; 
 };

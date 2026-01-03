@@ -19,22 +19,17 @@ void Intake::initialize() {
 
 void Intake::update() {
     if (antijam) {
-        movingMutex.take();
-        bool b = moving;
-        movingMutex.give();
-        if (b && (abs(bottom_intake.get_actual_velocity()) < 10)) {
+        if (moving && (abs(bottom_intake.get_actual_velocity()) < 10)) {
             counter++;
 
-            if (counter >= 4) {
+            if (counter >= 5) {
                 antijam = false;
                 counter = 0;
                 Task t{[&] {
                     bottom_intake.move(-40);
-                    delay(150);
-                    voltsMutex.take();
-                    const auto _volts = volts;
-                    voltsMutex.give();
-                    bottom_intake.move(_volts);
+                    delay(200);
+
+                    bottom_intake.move(volts);
                     antijam = true;
                 }};
             }
@@ -48,40 +43,15 @@ void Intake::bottom_forwards(int power) {
     double pct = power / 127.0;
     bottom_intake.move_velocity(600 * pct);
 
-    voltsMutex.take();
     volts = power;
-    voltsMutex.give();
-    if (!antijam) {
-        movingMutex.take();
-        moving = true;
-        movingMutex.give();
-        return;
-    }
-    Task t{[&] {
-        delay(100);
-        movingMutex.take();
-        moving = true;
-        movingMutex.give();
-    }};
+    moving = true;
 }
 
 void Intake::bottom_backwards(int power) {
     bottom_intake.move(-power);
-    voltsMutex.take();
+
     volts = -power;
-    voltsMutex.give();
-    if (!antijam) {
-        movingMutex.take();
-        moving = true;
-        movingMutex.give();
-        return;
-    }
-    Task t{[&] {
-        delay(100);
-        movingMutex.take();
-        moving = true;
-        movingMutex.give();
-    }};
+    moving = true;
 }
 
 void Intake::top_forwards(int power) {
@@ -95,6 +65,7 @@ void Intake::top_backwards(int power) {
 void Intake::stop() {
     bottom_intake.move(0);
     top_intake.move(0);
+
     moving = false;
 }
 
