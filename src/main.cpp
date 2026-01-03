@@ -10,8 +10,8 @@ using namespace pros::c;
 
 static Controller master(E_CONTROLLER_MASTER);
 
-static MotorGroup left_motor_group({-L_DRIVE_FRONT, L_DRIVE_MID, -L_DRIVE_BACK}, MotorGears::blue, MotorUnits::rotations);
-static MotorGroup right_motor_group({R_DRIVE_FRONT, -R_DRIVE_MID, R_DRIVE_BACK}, MotorGears::blue, MotorUnits::rotations);
+static MotorGroup left_motor_group({-L_DRIVE_FRONT, L_DRIVE_MID, L_DRIVE_BACK}, MotorGears::blue, MotorUnits::rotations);
+static MotorGroup right_motor_group({R_DRIVE_FRONT, -R_DRIVE_MID, -R_DRIVE_BACK}, MotorGears::blue, MotorUnits::rotations);
 static auto imu = Imu(INERTIAL_PORT);
 
 lemlib::Drivetrain drivetrain(
@@ -84,10 +84,17 @@ void autonomous() {}
 // top right back
 
 void opcontrol() {
-	Motor bottom_intake = Motor(BOTTOM_INTAKE);
-    Motor top_intake = Motor(TOP_INTAKE);
+    Motor bottom_intake = Motor(-BOTTOM_INTAKE);
+    Motor top_intake = Motor(-TOP_INTAKE);
+    static uint32_t l2_press_ms = 0;
+
+
 
     auto wing = ADIDigitalOut(WING_PORT);
+    auto matchloader = ADIDigitalOut(MATCH_LOADER_PORT);
+    auto midgoal = ADIDigitalOut(MIDGOAL_PORT);
+
+    wing.set_value(true);
 
     std::unordered_map<controller_digital_e_t, std::function<void()>> toggle_controls;
     std::unordered_map<controller_digital_e_t, std::pair<std::function<void(bool)>, std::function<void()>>> hold_controls;
@@ -95,32 +102,49 @@ void opcontrol() {
 
     hold_controls.emplace(E_CONTROLLER_DIGITAL_B, std::make_pair(
         [&](bool firstPress) {
-            wing.set_value(true);
-        },
-        [&]() {
             wing.set_value(false);
+        },
+        [&]() {
+            wing.set_value(true);
         }
     ));
 
-    hold_controls.emplace(E_CONTROLLER_DIGITAL_L1, std::make_pair(
+    hold_controls.emplace(E_CONTROLLER_DIGITAL_DOWN, std::make_pair(
         [&](bool firstPress) {
-            bottom_intake.move(127);
+            matchloader.set_value(true);
         },
         [&]() {
-            bottom_intake.move(0);
-        }
-    ));
-
-    hold_controls.emplace(E_CONTROLLER_DIGITAL_L2, std::make_pair(
-        [&](bool firstPress) {
-            bottom_intake.move(-127);
-        },
-        [&]() {
-            bottom_intake.move(0);
+            matchloader.set_value(false);
         }
     ));
 
     hold_controls.emplace(E_CONTROLLER_DIGITAL_R1, std::make_pair(
+        [&](bool firstPress) {
+            bottom_intake.move(127);
+            // While L1 is held, top intake should brake
+            top_intake.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+            top_intake.brake();
+        },
+        [&]() {
+            bottom_intake.move(0);
+            // When released, stop top intake (return to coast)
+            top_intake.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+            top_intake.move(0);
+        }
+    ));
+
+    hold_controls.emplace(E_CONTROLLER_DIGITAL_R2, std::make_pair(
+        [&](bool firstPress) {
+            bottom_intake.move(-127);
+            top_intake.move(-127);
+        },
+        [&]() {
+            bottom_intake.move(0);
+            top_intake.move(0);
+        }
+    ));
+
+    hold_controls.emplace(E_CONTROLLER_DIGITAL_L1, std::make_pair(
         [&](bool firstPress) {
             top_intake.move(127);
             bottom_intake.move(127);
@@ -131,14 +155,21 @@ void opcontrol() {
         }
     ));
 
-    hold_controls.emplace(E_CONTROLLER_DIGITAL_R2, std::make_pair(
+    hold_controls.emplace(E_CONTROLLER_DIGITAL_L2, std::make_pair(
         [&](bool firstPress) {
-            top_intake.move(-127);
-            bottom_intake.move(-127);
+            if (firstPress) l2_press_ms = pros::millis();
+
+            const uint32_t dt = pros::millis() - l2_press_ms;
+            midgoal.set_value(true);
+            top_intake.move(0);
+            // bottom_intake.move(127);
+            // top_intake.move(dt < 300 ? -127 : 0);
+            bottom_intake.move(dt < 100 ? -127 : 127);
         },
         [&]() {
             top_intake.move(0);
             bottom_intake.move(0);
+            midgoal.set_value(false);
         }
     ));
 
@@ -188,9 +219,9 @@ void opcontrol() {
 
         temperatureSum = 0.0;
 
-        master.print(0, 0, "Top Intake: %.2f°C", top_intake.get_temperature());
+        master.print(0, 0, "Top: %.2f°C", top_intake.get_temperature());
         pros::delay(1);
-        master.print(1, 0, "Bottom Intake: %.2f°C", bottom_intake.get_temperature());
+        master.print(1, 0, "Bottom: %.2f°C", bottom_intake.get_temperature());
         pros::delay(1);
         master.print(2, 0, "Drive: %.2f°C", averageTemperature);
         pros::delay(1);
