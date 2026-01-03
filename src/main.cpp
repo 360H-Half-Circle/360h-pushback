@@ -3,6 +3,7 @@
 #include "lemlib/api.hpp"
 #include "selector.hpp"
 #include <unordered_set>
+#include "intake.hpp"
 
 #define TRACK_WIDTH 10.0
 
@@ -62,8 +63,12 @@ lemlib::Chassis chassis(drivetrain, // drivetrain settings
     sensors // odometry sensors
 );
 
+Intake& intake = Intake::getInstance();
+
 void initialize() {
     lcd::initialize();
+
+    intake.initialize();
 
     chassis.calibrate(true);
 }
@@ -88,8 +93,6 @@ void opcontrol() {
     Motor top_intake = Motor(-TOP_INTAKE);
     static uint32_t l2_press_ms = 0;
 
-
-
     auto wing = ADIDigitalOut(WING_PORT);
     auto matchloader = ADIDigitalOut(MATCH_LOADER_PORT);
     auto midgoal = ADIDigitalOut(MIDGOAL_PORT);
@@ -99,6 +102,8 @@ void opcontrol() {
     std::unordered_map<controller_digital_e_t, std::function<void()>> toggle_controls;
     std::unordered_map<controller_digital_e_t, std::pair<std::function<void(bool)>, std::function<void()>>> hold_controls;
     std::unordered_set<controller_digital_e_t> held;
+
+    intake.set_anti_jam(true);
 
     hold_controls.emplace(E_CONTROLLER_DIGITAL_B, std::make_pair(
         [&](bool firstPress) {
@@ -120,38 +125,36 @@ void opcontrol() {
 
     hold_controls.emplace(E_CONTROLLER_DIGITAL_R1, std::make_pair(
         [&](bool firstPress) {
-            bottom_intake.move(127);
+            intake.bottom_forwards(127);
             // While L1 is held, top intake should brake
-            top_intake.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-            top_intake.brake();
+            intake.top_intake.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+            intake.stop_top();
         },
         [&]() {
-            bottom_intake.move(0);
+            intake.stop_bottom();
             // When released, stop top intake (return to coast)
-            top_intake.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-            top_intake.move(0);
+            intake.top_intake.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+            intake.stop_top();;
         }
     ));
 
     hold_controls.emplace(E_CONTROLLER_DIGITAL_R2, std::make_pair(
         [&](bool firstPress) {
-            bottom_intake.move(-127);
-            top_intake.move(-127);
+            intake.bottom_backwards(127);
+            intake.top_backwards(127);
         },
         [&]() {
-            bottom_intake.move(0);
-            top_intake.move(0);
+            intake.stop();
         }
     ));
 
     hold_controls.emplace(E_CONTROLLER_DIGITAL_L1, std::make_pair(
         [&](bool firstPress) {
-            top_intake.move(127);
-            bottom_intake.move(127);
+            intake.bottom_forwards(127);
+            intake.top_forwards(127);
         },
         [&]() {
-            top_intake.move(0);
-            bottom_intake.move(0);
+            intake.stop();
         }
     ));
 
@@ -161,14 +164,12 @@ void opcontrol() {
 
             const uint32_t dt = pros::millis() - l2_press_ms;
             midgoal.set_value(true);
-            top_intake.move(0);
-            // bottom_intake.move(127);
-            // top_intake.move(dt < 300 ? -127 : 0);
-            bottom_intake.move(dt < 100 ? -127 : 127);
+            intake.stop_top();
+            intake.bottom_forwards(dt < 100 ? -127 : 127);
         },
         [&]() {
-            top_intake.move(0);
-            bottom_intake.move(0);
+            intake.stop_top();
+            intake.stop_bottom();
             midgoal.set_value(false);
         }
     ));
