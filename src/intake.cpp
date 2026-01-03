@@ -28,8 +28,8 @@ void Intake::update() {
                 antijam = false;
                 counter = 0;
                 Task t{[&] {
-                    bottom_intake.move(-40);
-                    delay(200);
+                    bottom_intake.move(-127);
+                    delay(1000);
 
                     if (master.get_digital(E_CONTROLLER_DIGITAL_R1)) {
                         bottom_intake.move(volts);
