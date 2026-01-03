@@ -2,6 +2,8 @@
 #include "controls.hpp"
 #include <iostream>
 
+Controller master(E_CONTROLLER_MASTER);
+
 void Intake::initialize() {
     if (initialized) return;
 
@@ -29,7 +31,11 @@ void Intake::update() {
                     bottom_intake.move(-40);
                     delay(200);
 
-                    bottom_intake.move(volts);
+                    if (master.get_digital(E_CONTROLLER_DIGITAL_R1)) {
+                        bottom_intake.move(volts);
+                    } else {
+                        bottom_intake.move(0);
+                    }
                     antijam = true;
                 }};
             }
