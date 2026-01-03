@@ -48,6 +48,8 @@ void Intake::update() {
 }
 
 void Intake::bottom_forwards(int power) {
+    if (moving) return;
+
     double pct = power / 127.0;
     bottom_intake.move_velocity(600 * pct);
 
@@ -56,6 +58,8 @@ void Intake::bottom_forwards(int power) {
 }
 
 void Intake::bottom_backwards(int power) {
+    if (moving) return;
+    
     bottom_intake.move(-power);
 
     volts = -power;
