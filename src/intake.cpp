@@ -31,6 +31,8 @@ void Intake::update() {
                     bottom_intake.move(-127);
                     delay(1000);
 
+                    std::cout << "[Intake] Anti-jam activated\n";
+
                     if (master.get_digital(E_CONTROLLER_DIGITAL_R1)) {
                         bottom_intake.move(volts);
                     } else {
