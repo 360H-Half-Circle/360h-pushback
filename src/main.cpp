@@ -78,6 +78,19 @@ void initialize() {
     intake.initialize();
 
     chassis.calibrate(true);
+
+    Task lemlib_print_task{[] {
+        // print pose
+        while (true) {
+            auto pose = chassis.getPose();
+            lcd::print(0, "X: %.2f in", pose.x);
+            pros::delay(1);
+            lcd::print(1, "Y: %.2f in", pose.y);
+            pros::delay(1);
+            lcd::print(2, "Theta: %.2f deg", pose.theta);
+            pros::delay(100);
+        }
+    }};
 }
 
 void disabled() {}
