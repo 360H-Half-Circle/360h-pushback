@@ -54,7 +54,11 @@ void Intake::bottom_forwards(int power) {
     bottom_intake.move_velocity(600 * pct);
 
     volts = power;
-    moving = true;
+    
+    Task t{[&] {
+        delay(50);
+        moving = true;
+    }};
 }
 
 void Intake::bottom_backwards(int power) {
@@ -63,7 +67,11 @@ void Intake::bottom_backwards(int power) {
     bottom_intake.move(-power);
 
     volts = -power;
-    moving = true;
+    
+    Task t{[&] {
+        delay(50);
+        moving = true;
+    }};
 }
 
 void Intake::top_forwards(int power) {
