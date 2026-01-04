@@ -2,11 +2,11 @@
 
 #include "intake.hpp"
 
-// Intake& intake = Intake::getInstance();
-// auto matchloader = ADIDigitalOut(MATCH_LOADER_PORT);
-
+auto matchloader = ADIDigitalOut(MATCH_LOADER_PORT);
 
 void auton::example_auton(lemlib::Chassis& chassis) {
+    Intake& intake = Intake::getInstance();
+
     chassis.setPose(-49, -16, 90);
     intake.bottom_forwards(127);
 
