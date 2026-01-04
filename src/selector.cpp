@@ -400,28 +400,28 @@ namespace sec {
         lv_obj_set_width(redNegBtn, 100);
         lv_obj_set_height(redNegBtn, LV_SIZE_CONTENT);
         lv_obj_t *redNegBtnLabel = lv_label_create(redNegBtn);
-        lv_label_set_text(redNegBtnLabel, "Red Neg");
+        lv_label_set_text(redNegBtnLabel, "Red Left");
         lv_obj_align(redNegBtn, LV_ALIGN_TOP_LEFT, 8, 15);
         lv_obj_add_event_cb(redNegBtn, mainButtonsEventHandler, LV_EVENT_CLICKED, NULL);
     
         lv_obj_set_width(redPosBtn, 100);
         lv_obj_set_height(redPosBtn, LV_SIZE_CONTENT);
         lv_obj_t *redPosBtnLabel = lv_label_create(redPosBtn);
-        lv_label_set_text(redPosBtnLabel, "Red Pos");
+        lv_label_set_text(redPosBtnLabel, "Red Right");
         lv_obj_align(redPosBtn, LV_ALIGN_BOTTOM_LEFT, 8, -15);
         lv_obj_add_event_cb(redPosBtn, mainButtonsEventHandler, LV_EVENT_CLICKED, NULL);
     
         lv_obj_set_width(blueNegBtn, 100);
         lv_obj_set_height(blueNegBtn, LV_SIZE_CONTENT);
         lv_obj_t *blueNegBtnLabel = lv_label_create(blueNegBtn);
-        lv_label_set_text(blueNegBtnLabel, "Blue Neg");
+        lv_label_set_text(blueNegBtnLabel, "Blue Right");
         lv_obj_align(blueNegBtn, LV_ALIGN_TOP_RIGHT, -8, 15);
         lv_obj_add_event_cb(blueNegBtn, mainButtonsEventHandler, LV_EVENT_CLICKED, NULL);
     
         lv_obj_set_width(bluePosBtn, 100);
         lv_obj_set_height(bluePosBtn, LV_SIZE_CONTENT);
         lv_obj_t *bluePosBtnLabel = lv_label_create(bluePosBtn);
-        lv_label_set_text(bluePosBtnLabel, "Blue Pos");
+        lv_label_set_text(bluePosBtnLabel, "Blue Left");
         lv_obj_align(bluePosBtn, LV_ALIGN_BOTTOM_RIGHT, -8, -15);
         lv_obj_add_event_cb(bluePosBtn, mainButtonsEventHandler, LV_EVENT_CLICKED, NULL);
 

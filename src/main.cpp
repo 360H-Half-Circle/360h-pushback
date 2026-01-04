@@ -7,7 +7,7 @@
 #include "autonomous.hpp"
 #include "distanceReset.hpp"
 
-#define TRACK_WIDTH 10.0
+#define TRACK_WIDTH 10.125
 
 using namespace pros::c;
 
@@ -40,9 +40,9 @@ lemlib::ControllerSettings lateral_controller(
 
 // angular PID controller
 lemlib::ControllerSettings angular_controller(
-    2, // proportional gain (kP)
+    3, // proportional gain (kP)
     0, // integral gain (kI)
-    10, // derivative gain (kD)
+    15, // derivative gain (kD)
     3, // anti windup
     1, // small error range, in degrees
     100, // small error range timeout, in milliseconds
@@ -73,7 +73,7 @@ Intake& intake = Intake::getInstance();
 
 void initialize() {
     lcd::initialize();
-    sec::init();
+    // sec::init();
 
     intake.initialize();
 
@@ -85,16 +85,17 @@ void disabled() {}
 void competition_initialize() {}
 
 void autonomous() {
-    switch (sec::auton)
-    {
-    case 0:
-        // some auto
-        auton::example_auton(chassis);
-        break;
+    auton::example_auton(chassis);
+    // switch (sec::auton)
+    // {
+    // case 0:
+    //     // some auto
+    //     auton::example_auton(chassis);
+    //     break;
     
-    default:
-        break;
-    }
+    // default:
+    //     break;
+    // }
 }
 
 // b is wing down is matchloader 
@@ -183,7 +184,7 @@ void opcontrol() {
             const uint32_t dt = pros::millis() - l2_press_ms;
             midgoal.set_value(true);
             intake.stop_top();
-            intake.bottom_forwards(dt < 100 ? -127 : 127);
+            intake.bottom_forwards(dt < 100 ? 127 : -127);
         },
         [&]() {
             intake.stop_top();
@@ -246,5 +247,7 @@ void opcontrol() {
         pros::delay(1);
         master.print(2, 0, "Drive: %.2f°C", averageTemperature);
         pros::delay(1);
+        // master.print(2,0,"Heading: %.2f", imu.get_heading());
+        // pros::delay(1);
     }
 }
