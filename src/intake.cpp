@@ -21,7 +21,7 @@ void Intake::initialize() {
 
 void Intake::update() {
     if (antijam) {
-        if (moving && (abs(bottom_intake.get_current_draw()) > 2000)) {
+        if (moving && (abs(bottom_intake.get_actual_velocity()) < 15)) {
             counter++;
 
             if (counter >= 5) {
@@ -29,7 +29,7 @@ void Intake::update() {
                 counter = 0;
                 Task t{[&] {
                     bottom_intake.move(-127);
-                    delay(100);
+                    delay(70);
 
                     std::cout << "[Intake] Anti-jam activated\n";
 
