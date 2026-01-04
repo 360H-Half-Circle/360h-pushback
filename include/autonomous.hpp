@@ -3,5 +3,5 @@
 #include "lemlib/api.hpp"
 
 namespace auton {
-    void example_auton(lemlib::Chassis& chassis);
+    void seven_wing_right(lemlib::Chassis& chassis);
 }

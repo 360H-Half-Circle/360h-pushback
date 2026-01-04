@@ -35,7 +35,7 @@ lemlib::ControllerSettings lateral_controller(
     100, // small error range timeout, in millisecond
     3, // large error range, in inches
     500, // large error range timeout, in milliseconds
-    0 // maximum acceleration (slew)
+    100 // maximum acceleration (slew)
 );
 
 // angular PID controller
@@ -98,12 +98,12 @@ void disabled() {}
 void competition_initialize() {}
 
 void autonomous() {
-    auton::example_auton(chassis);
+    auton::seven_wing_right(chassis);
     // switch (sec::auton)
     // {
     // case 0:
     //     // some auto
-    //     auton::example_auton(chassis);
+    //     auton::7_wing_right(chassis);
     //     break;
     
     // default:
