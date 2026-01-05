@@ -4,4 +4,8 @@
 
 namespace auton {
     void seven_wing_right(lemlib::Chassis& chassis);
+    void four_wing_right(lemlib::Chassis& chassis);
+
+    void seven_wing_left(lemlib::Chassis& chassis);
+    void four_wing_left(lemlib::Chassis& chassis);
 }

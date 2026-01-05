@@ -98,11 +98,12 @@ void disabled() {}
 void competition_initialize() {}
 
 void autonomous() {
+    // auton::seven_wing_right(chassis);
     auton::seven_wing_right(chassis);
     // switch (sec::auton)
     // {
     // case 0:
-    //     // some auto
+    //     // some autos
     //     auton::7_wing_right(chassis);
     //     break;
     
@@ -135,7 +136,7 @@ void opcontrol() {
     std::unordered_map<controller_digital_e_t, std::pair<std::function<void(bool)>, std::function<void()>>> hold_controls;
     std::unordered_set<controller_digital_e_t> held;
 
-    intake.set_anti_jam(true);
+    intake.set_anti_jam(false);
 
     hold_controls.emplace(E_CONTROLLER_DIGITAL_B, std::make_pair(
         [&](bool firstPress) {
@@ -192,12 +193,12 @@ void opcontrol() {
 
     hold_controls.emplace(E_CONTROLLER_DIGITAL_L2, std::make_pair(
         [&](bool firstPress) {
-            if (firstPress) l2_press_ms = pros::millis();
+            // if (firstPress) l2_press_ms = pros::millis();
 
-            const uint32_t dt = pros::millis() - l2_press_ms;
+            // const uint32_t dt = pros::millis() - l2_press_ms;
             midgoal.set_value(true);
-            intake.stop_top();
-            intake.bottom_forwards(dt < 100 ? 127 : -127);
+            intake.top_forwards(127);
+            intake.bottom_forwards(127);
         },
         [&]() {
             intake.stop_top();
