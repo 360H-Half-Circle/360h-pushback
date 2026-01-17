@@ -211,3 +211,77 @@ void auton::four_wing_left(lemlib::Chassis& chassis) {
     chassis.moveToPoint(-6,61, 5000, {.forwards = false, .maxSpeed = 60}, false);
 
 }
+
+void auton::sawp(lemlib::Chassis& chassis) {
+    Intake& intake = Intake::getInstance();
+    intake.set_anti_jam(false);
+    chassis.setPose(-50, -16, 0);
+    matchloader.set_value(true);
+    chassis.moveToPoint(-50,-50, 1000, {.forwards = false}, false);
+    chassis.turnToHeading(270, 300);
+
+    // alligned to matchloader
+    intake.bottom_forwards(127);
+    chassis.moveToPoint(-63,-52, 700,  {.maxSpeed = 70});
+    chassis.tank(100,100);
+
+    intake.set_anti_jam(false);
+    chassis.turnToPoint(-24,-52, 400, {.forwards = false, .earlyExitRange = 0.1}, false);
+    
+
+    chassis.moveToPoint(-24,-52, 4000, {.forwards = false, .maxSpeed = 80}, true);
+    delay(1200);
+    intake.stop();
+    intake.set_anti_jam(true);
+    intake.bottom_forwards(127);    
+    intake.top_forwards(127);
+    chassis.tank(-60,-60);
+    delay(1500);
+    matchloader.set_value(false);
+    chassis.tank(0,0);
+    intake.stop();
+    chassis.setPose(-25.1751 ,-51.1889, chassis.getPose().theta);
+
+    //done scoring
+
+    chassis.swingToPoint(-22,-30, DriveSide::RIGHT, 1000, {.maxSpeed = 80});
+    intake.bottom_forwards(127);
+    chassis.moveToPoint(-20,-28, 1000, {.forwards = true}, true);
+    delay(300);
+    matchloader.set_value(true);
+
+    //intaking first stack
+
+    chassis.turnToHeading(0, 500);
+    matchloader.set_value(false);
+    chassis.moveToPoint(-20,22, 2000, {.forwards = true, .maxSpeed = 80}, true);
+    delay(800);
+    matchloader.set_value(true);
+
+    chassis.turnToPoint(-40, 40, 700, {.earlyExitRange = 0.1});
+
+        //intaking second stack
+
+    intake.stop();
+    chassis.moveToPoint(-40, 40, 800, {.earlyExitRange = 0.1});
+    chassis.turnToHeading(270, 300, {.earlyExitRange = 0.1});
+
+
+
+    chassis.moveToPoint(-20,40, 1000, {.forwards = false, .maxSpeed = 80}, true);
+    delay(1200);
+    intake.set_anti_jam(true);
+    intake.bottom_forwards(127);    
+    intake.top_forwards(127);
+    chassis.tank(-60,-60);
+    delay(2000);
+    matchloader.set_value(false);
+    chassis.tank(0,0);
+    intake.stop();
+    chassis.setPose(-25.1751 ,47, chassis.getPose().theta);
+
+    chassis.moveToPoint(-25.1751,25.1751,1000);
+    chassis.turnToPoint(0,0,700, {.forwards = false});
+    chassis.moveToPoint(14,14,3000, {.forwards = false});
+
+} 

@@ -9,94 +9,75 @@ using namespace pros;
 Controller cm(E_CONTROLLER_MASTER);
 
 LV_IMG_DECLARE(field);
+/*
 
+Autos: (Red and blue are the same except for the color of the balls on the matchloader)
+
+Right Side SAWP
+
+Left Side 7 Wing
+Right Side 7 Wing
+Left Side 4 Wing
+Right Side 4 Wing
+Left Side 9 Split
+Right Side 9 Split
+
+
+
+*/
 const char* autonNames[] = {
     "RSAWP",     // 0
     "BSAWP",     // 1
-    "R5p1wB",    // 2
-    "R5p1wL",    // 3
-    "R5p1aB",    // 4
-    "R5p1aL",    // 5
-    "R6B",       // 6
-    "R6L",       // 7
-    "B5p1wB",    // 8
-    "B5p1wL",    // 9
-    "B5p1aB",    // 10
-    "B5p1aL",    // 11
-    "B6B",       // 12
-    "B6L",       // 13
-    "R-6.1C",    // 14
-    "R-6.1L",    // 15
-    "R-6.1X",    // 16  (X = No Sweep)
-    "R-6C",      // 17
-    "R-6L",      // 18
-    "R-6X",      // 19
-    "B-6.1C",    // 20
-    "B-6.1L",    // 21
-    "B-6.1X",    // 22
-    "B-6C",      // 23
-    "B-6L",      // 24
-    "B-6X"       // 25
+    "R7WL",    // 2
+    "B7WL",    // 3
+    "R7WR",    // 4
+    "B7WR",    // 5
+    "R4WL",       // 6
+    "B4WL",       // 7
+    "R4WR",    // 8
+    "B4WR",    // 9
+    "R9SL",    // 10
+    "B9SL",    // 11
+    "R9SR",       // 12
+    "B9SR",       // 13
 };
 
-// COMPLETED AUTONS:
+// RED LEFT
+lv_obj_t* R7WLBtn;
+lv_obj_t* R4WLBtn;
+lv_obj_t* R9SLBtn;
 
+// BLUE LEFT
+lv_obj_t* B7WLBtn;
+lv_obj_t* B4WLBtn;
+lv_obj_t* B9SLBtn;
 
-lv_obj_t* redNegBtn;
-lv_obj_t* redPosBtn;
-lv_obj_t* blueNegBtn;
-lv_obj_t* bluePosBtn;
+// RED RIGHT
+lv_obj_t* R7WRBtn;
+lv_obj_t* R4WRBtn;
+lv_obj_t* R9SRBtn;
 
-// RED POS
-lv_obj_t* redPos_5p1w_BakerBtn;
-lv_obj_t* redPos_5p1w_LadderBtn;
-lv_obj_t* redPos_5p1a_BakerBtn;
-lv_obj_t* redPos_5p1a_LadderBtn;
-lv_obj_t* redPos_6_BakerBtn;
-lv_obj_t* redPos_6_LadderBtn;
-
-// BLUE POS
-lv_obj_t* bluePos_5p1w_BakerBtn;
-lv_obj_t* bluePos_5p1w_LadderBtn;
-lv_obj_t* bluePos_5p1a_BakerBtn;
-lv_obj_t* bluePos_5p1a_LadderBtn;
-lv_obj_t* bluePos_6_BakerBtn;
-lv_obj_t* bluePos_6_LadderBtn;
-
-// RED NEG
-lv_obj_t* redNeg_6p1CornerBtn;
-lv_obj_t* redNeg_6p1LadderBtn;
-lv_obj_t* redNeg_6p1CornerNoSweepBtn;
-
-lv_obj_t* redNeg_6CornerBtn;
-lv_obj_t* redNeg_6LadderBtn;
-lv_obj_t* redNeg_6CornerNoSweepBtn;
-
-// BLUE NEG
-lv_obj_t* blueNeg_6p1CornerBtn;
-lv_obj_t* blueNeg_6p1LadderBtn;
-lv_obj_t* blueNeg_6p1CornerNoSweepBtn;
-
-lv_obj_t* blueNeg_6CornerBtn;
-lv_obj_t* blueNeg_6LadderBtn;
-lv_obj_t* blueNeg_6CornerNoSweepBtn;
+// BLUE RIGHT
+lv_obj_t* B7WRBtn;
+lv_obj_t* B4WRBtn;
+lv_obj_t* B9SRBtn;
 
 // Solo Win Point
-lv_obj_t* redNeg_sawpBtn;
-lv_obj_t* blueNeg_sawpBtn;
+lv_obj_t* redRight_sawpBtn;
+lv_obj_t* blueRight_sawpBtn;
 
 lv_obj_t* titleLabel;
 
-std::vector<lv_obj_t*> redNegButtons;
-std::vector<lv_obj_t*> redPosButtons;
-std::vector<lv_obj_t*> blueNegButtons;
-std::vector<lv_obj_t*> bluePosButtons;
+std::vector<lv_obj_t*> redRightButtons;
+std::vector<lv_obj_t*> redLeftButtons;
+std::vector<lv_obj_t*> blueLeftButtons;
+std::vector<lv_obj_t*> blueRightButtons;
 std::vector<lv_obj_t*> sawpButtons;
 
-#define RED_NEG 0
-#define RED_POS 1
-#define BLUE_NEG 2
-#define BLUE_POS 3
+#define RED_LEFT 0
+#define RED_RIGHT 1
+#define BLUE_LEFT 2
+#define BLUE_RIGHT 3
 
 namespace sec {
     int auton;
@@ -133,29 +114,29 @@ namespace sec {
     static void showAndHideOtherButtons(int show) {
         switch (show)
         {
-        case RED_NEG:
-            showButtons(redNegButtons);
-            hideButtons(redPosButtons);
-            hideButtons(blueNegButtons);
-            hideButtons(bluePosButtons);
+        case RED_LEFT:
+            showButtons(redLeftButtons);
+            hideButtons(redRightButtons);
+            hideButtons(blueLeftButtons);
+            hideButtons(blueRightButtons);
             break;
-        case RED_POS:
-            hideButtons(redNegButtons);
-            showButtons(redPosButtons);
-            hideButtons(blueNegButtons);
-            hideButtons(bluePosButtons);
+        case RED_RIGHT:
+            hideButtons(redLeftButtons);
+            showButtons(redRightButtons);
+            hideButtons(blueLeftButtons);
+            hideButtons(blueRightButtons);
             break;
-        case BLUE_NEG:
-            hideButtons(redNegButtons);
-            hideButtons(redPosButtons);
-            showButtons(blueNegButtons);
-            hideButtons(bluePosButtons);
+        case BLUE_LEFT:
+            hideButtons(redLeftButtons);
+            hideButtons(redRightButtons);
+            showButtons(blueLeftButtons);
+            hideButtons(blueRightButtons);
             break;
-        case BLUE_POS:
-            hideButtons(redNegButtons);
-            hideButtons(redPosButtons);
-            hideButtons(blueNegButtons);
-            showButtons(bluePosButtons);
+        case BLUE_RIGHT:
+            hideButtons(redLeftButtons);
+            hideButtons(redRightButtons);
+            hideButtons(blueLeftButtons);
+            showButtons(blueRightButtons);
             break;
         }
     }
@@ -167,58 +148,36 @@ namespace sec {
     static void secondButtonsEventHandler(lv_event_t * e) {
         lv_obj_t *btn = lv_event_get_target(e);
 
-        if (equals(btn, redNeg_sawpBtn)) {
+        if (equals(btn, redRight_sawpBtn)) {
             auton = 0;
-        } else if (equals(btn, blueNeg_sawpBtn)) {
+        } else if (equals(btn, blueRight_sawpBtn)) {
             auton = 1;
-        } else if (equals(btn, redPos_5p1w_BakerBtn)) {
+        } else if (equals(btn, redRight_sawpBtn)) {
             auton = 2;
-        } else if (equals(btn, redPos_5p1w_LadderBtn)) {
+        } else if (equals(btn, red7WLBtn)) {
             auton = 3;
-        } else if (equals(btn, redPos_5p1a_BakerBtn)) {
+        } else if (equals(btn, blue7WLBtn)) {
             auton = 4;
-        } else if (equals(btn, redPos_5p1a_LadderBtn)) {
+        } else if (equals(btn, red7WRBtn)) {
             auton = 5;
-        } else if (equals(btn, redPos_6_BakerBtn)) {
+        } else if (equals(btn, blue7WRBtn)) {
             auton = 6;
-        } else if (equals(btn, redPos_6_LadderBtn)) {
+        } else if (equals(btn, red4WLBtn)) {
             auton = 7;
-        } else if (equals(btn, bluePos_5p1w_BakerBtn)) {
+        } else if (equals(btn, blue4WLBtn)) {
             auton = 8;
-        } else if (equals(btn, bluePos_5p1w_LadderBtn)) {
+        } else if (equals(btn, red4WRBtn)) {
             auton = 9;
-        } else if (equals(btn, bluePos_5p1a_BakerBtn)) {
+        } else if (equals(btn, blue4WRBtn)) {
             auton = 10;
-        } else if (equals(btn, bluePos_5p1a_LadderBtn)) {
+        } else if (equals(btn, red9SLBtn)) {
             auton = 11;
-        } else if (equals(btn, bluePos_6_BakerBtn)) {
+        } else if (equals(btn, blue9SLBtn)) {
             auton = 12;
-        } else if (equals(btn, bluePos_6_LadderBtn)) {
+        } else if (equals(btn, red9SRBtn)) {
             auton = 13;
-        } else if (equals(btn, redNeg_6p1CornerBtn)) {
+        } else if (equals(btn, blue9SRBtn)) {
             auton = 14;
-        } else if (equals(btn, redNeg_6p1LadderBtn)) {
-            auton = 15;
-        } else if (equals(btn, redNeg_6p1CornerNoSweepBtn)) {
-            auton = 16;
-        } else if (equals(btn, redNeg_6CornerBtn)) {
-            auton = 17;
-        } else if (equals(btn, redNeg_6LadderBtn)) {
-            auton = 18;
-        } else if (equals(btn, redNeg_6CornerNoSweepBtn)) {
-            auton = 19;
-        } else if (equals(btn, blueNeg_6p1CornerBtn)) {
-            auton = 20;
-        } else if (equals(btn, blueNeg_6p1LadderBtn)) {
-            auton = 21;
-        } else if (equals(btn, blueNeg_6p1CornerNoSweepBtn)) {
-            auton = 22;
-        } else if (equals(btn, blueNeg_6CornerBtn)) {
-            auton = 23;
-        } else if (equals(btn, blueNeg_6LadderBtn)) {
-            auton = 24;
-        } else if (equals(btn, blueNeg_6CornerNoSweepBtn)) {
-            auton = 25;
         }
         
         lv_label_set_text_fmt(titleLabel, "Selected Auton: %s", autonNames[auton]);
@@ -236,7 +195,7 @@ namespace sec {
             lv_obj_t *label = lv_label_create(button);
             lv_label_set_text(label, "no auto");
             auto align = LV_ALIGN_LEFT_MID;
-            if (type == BLUE_NEG || type == BLUE_POS) {
+            if (type == BLUE_RIGHT || type == BLUE_LEFT) {
                 align = LV_ALIGN_RIGHT_MID;
             }
             lv_obj_align(button, align, x + 72 * i, -40 + 42 * j);
@@ -248,7 +207,7 @@ namespace sec {
 
             realIndex++;
 
-            if (type == RED_POS || type == RED_NEG) {
+            if (type == RED_RIGHT || type == RED_LEFT) {
                 lv_obj_set_style_bg_color(button, lv_palette_main(LV_PALETTE_RED), LV_PART_MAIN);
             } else {
                 lv_obj_set_style_bg_color(button, lv_palette_main(LV_PALETTE_BLUE), LV_PART_MAIN);
@@ -261,46 +220,46 @@ namespace sec {
     static void mainButtonsEventHandler(lv_event_t * e){
         lv_obj_t *btn = lv_event_get_target(e);
         
-        if (equals(btn, redNegBtn)) {
+        if (equals(btn, redLEFTBtn)) {
             std::cout << "Red Neg" << std::endl;
-            showAndHideOtherButtons(RED_NEG);
+            showAndHideOtherButtons(RED_LEFT);
 
-            lv_obj_add_state(redNegBtn, LV_STATE_CHECKED);
-            lv_obj_clear_state(redPosBtn, LV_STATE_CHECKED);
-            lv_obj_clear_state(blueNegBtn, LV_STATE_CHECKED);
-            lv_obj_clear_state(bluePosBtn, LV_STATE_CHECKED);
+            lv_obj_add_state(redLEFTBtn, LV_STATE_CHECKED);
+            lv_obj_clear_state(redRIGHTBtn, LV_STATE_CHECKED);
+            lv_obj_clear_state(blueRIGHTBtn, LV_STATE_CHECKED);
+            lv_obj_clear_state(blueLEFTBtn, LV_STATE_CHECKED);
 
-            makeButtons(8, redNegButtons, RED_NEG);
-        } else if (btn == redPosBtn) {
+            makeButtons(8, redLEFTButtons, RED_LEFT);
+        } else if (btn == redRIGHTBtn) {
             std::cout << "Red Pos" << std::endl;
-            showAndHideOtherButtons(RED_POS);
+            showAndHideOtherButtons(RED_RIGHT);
 
-            lv_obj_add_state(redPosBtn, LV_STATE_CHECKED);
-            lv_obj_clear_state(redNegBtn, LV_STATE_CHECKED);
-            lv_obj_clear_state(blueNegBtn, LV_STATE_CHECKED);
-            lv_obj_clear_state(bluePosBtn, LV_STATE_CHECKED);
+            lv_obj_add_state(redRIGHTBtn, LV_STATE_CHECKED);
+            lv_obj_clear_state(redLEFTBtn, LV_STATE_CHECKED);
+            lv_obj_clear_state(blueRIGHTBtn, LV_STATE_CHECKED);
+            lv_obj_clear_state(blueLEFTBtn, LV_STATE_CHECKED);
 
-            makeButtons(8, redPosButtons, RED_POS);
-        } else if (btn == blueNegBtn) {
-            std::cout << "Blue Neg" << std::endl;
-            showAndHideOtherButtons(BLUE_NEG);
+            makeButtons(8, redRIGHTButtons, RED_RIGHT);
+        } else if (btn == blueRIGHTBtn) {
+            std::cout << "Blue Right" << std::endl;
+            showAndHideOtherButtons(BLUE_RIGHT);
 
-            lv_obj_add_state(blueNegBtn, LV_STATE_CHECKED);
-            lv_obj_clear_state(redNegBtn, LV_STATE_CHECKED);
-            lv_obj_clear_state(redPosBtn, LV_STATE_CHECKED);
-            lv_obj_clear_state(bluePosBtn, LV_STATE_CHECKED);
+            lv_obj_add_state(blueRIGHTBtn, LV_STATE_CHECKED);
+            lv_obj_clear_state(redLEFTBtn, LV_STATE_CHECKED);
+            lv_obj_clear_state(redRIGHTBtn, LV_STATE_CHECKED);
+            lv_obj_clear_state(blueLEFTBtn, LV_STATE_CHECKED);
 
-            makeButtons(-80, blueNegButtons, BLUE_NEG);
-        } else if (btn == bluePosBtn) {
-            std::cout << "Blue Pos" << std::endl;
-            showAndHideOtherButtons(BLUE_POS);
+            makeButtons(-80, blueRIGHTButtons, BLUE_RIGHT);
+        } else if (btn == blueLEFTBtn) {
+            std::cout << "Blue Left" << std::endl;
+            showAndHideOtherButtons(BLUE_LEFT);
 
-            lv_obj_add_state(bluePosBtn, LV_STATE_CHECKED);
-            lv_obj_clear_state(redNegBtn, LV_STATE_CHECKED);
-            lv_obj_clear_state(redPosBtn, LV_STATE_CHECKED);
-            lv_obj_clear_state(blueNegBtn, LV_STATE_CHECKED);
+            lv_obj_add_state(blueLEFTBtn, LV_STATE_CHECKED);
+            lv_obj_clear_state(redLEFTBtn, LV_STATE_CHECKED);
+            lv_obj_clear_state(redRIGHTBtn, LV_STATE_CHECKED);
+            lv_obj_clear_state(blueRIGHTBtn, LV_STATE_CHECKED);
 
-            makeButtons(-80, bluePosButtons, BLUE_POS);
+            makeButtons(-80, blueLEFTButtons, BLUE_LEFT);
         } else {
             std::cout << "Unknown Button Pressed" << std::endl;
         }
@@ -322,22 +281,23 @@ namespace sec {
 
         titleLabel = lv_label_create(lv_scr_act());
 
-        redNegBtn = lv_btn_create(lv_scr_act());
+        redLEFTBtn = lv_btn_create(lv_scr_act());
         //--
-        redNeg_6p1CornerBtn = lv_btn_create(lv_scr_act());
-        redNeg_6p1LadderBtn = lv_btn_create(lv_scr_act());
-        redNeg_6p1CornerNoSweepBtn = lv_btn_create(lv_scr_act());
-        redNeg_6CornerBtn = lv_btn_create(lv_scr_act());
-        redNeg_6LadderBtn = lv_btn_create(lv_scr_act());
-        redNeg_6CornerNoSweepBtn = lv_btn_create(lv_scr_act());
-        redNegButtons.push_back(redNeg_6p1CornerBtn);
-        redNegButtons.push_back(redNeg_6p1LadderBtn);
-        redNegButtons.push_back(redNeg_6p1CornerNoSweepBtn);
-        redNegButtons.push_back(redNeg_6CornerBtn);
-        redNegButtons.push_back(redNeg_6LadderBtn);
-        redNegButtons.push_back(redNeg_6CornerNoSweepBtn);
+        //fix this my god
+        redLEFT_6p1CornerBtn = lv_btn_create(lv_scr_act());
+        redLEFT_6p1LadderBtn = lv_btn_create(lv_scr_act());
+        redLEFT_6p1CornerNoSweepBtn = lv_btn_create(lv_scr_act());
+        redLEFT_6CornerBtn = lv_btn_create(lv_scr_act());
+        redLEFT_6LadderBtn = lv_btn_create(lv_scr_act());
+        redLEFT_6CornerNoSweepBtn = lv_btn_create(lv_scr_act());
+        redLEFTButtons.push_back(redLEFT_6p1CornerBtn);
+        redLEFTButtons.push_back(redLEFT_6p1LadderBtn);
+        redLEFTButtons.push_back(redLEFT_6p1CornerNoSweepBtn);
+        redLEFTButtons.push_back(redLEFT_6CornerBtn);
+        redLEFTButtons.push_back(redLEFT_6LadderBtn);
+        redLEFTButtons.push_back(redLEFT_6CornerNoSweepBtn);
 
-        redPosBtn = lv_btn_create(lv_scr_act());
+        redRIGHTBtn = lv_btn_create(lv_scr_act());
         //--
         redPos_5p1w_BakerBtn = lv_btn_create(lv_scr_act());
         redPos_5p1w_LadderBtn = lv_btn_create(lv_scr_act());

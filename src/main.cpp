@@ -99,7 +99,7 @@ void competition_initialize() {}
 
 void autonomous() {
     // auton::seven_wing_right(chassis);
-    auton::seven_wing_right(chassis);
+    auton::sawp(chassis);
     // switch (sec::auton)
     // {
     // case 0:
