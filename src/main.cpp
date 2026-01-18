@@ -136,6 +136,8 @@ void opcontrol() {
     std::unordered_map<controller_digital_e_t, std::pair<std::function<void(bool)>, std::function<void()>>> hold_controls;
     std::unordered_set<controller_digital_e_t> held;
 
+    chassis.setBrakeMode(E_MOTOR_BRAKE_COAST);
+
     intake.set_anti_jam(false);
 
     midgoal.set_value(true);
