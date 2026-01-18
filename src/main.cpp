@@ -98,8 +98,8 @@ void disabled() {}
 void competition_initialize() {}
 
 void autonomous() {
-    auton::four_wing_left(chassis);
-
+    // auton::four_wing_left(chassis);
+    auton::four_wing_right(chassis);
 }
 
 void opcontrol() {
@@ -122,9 +122,8 @@ void opcontrol() {
     intake.set_anti_jam(false);
 
     midgoal.set_value(true);
-    hood.set_value(false);
+    hood.set_value(true);
     wing.set_value(true);
-
 
     hold_controls.emplace(E_CONTROLLER_DIGITAL_B, std::make_pair(
         [&](bool firstPress) {
@@ -157,7 +156,7 @@ void opcontrol() {
         },
         [&]() {
             intake.stop();   
-            hood.set_value(false);
+            hood.set_value(true);
         }
     ));
 
@@ -192,7 +191,7 @@ void opcontrol() {
         [&]() {
             intake.stop();
             midgoal.set_value(true);
-            hood.set_value(false);
+            hood.set_value(true);
         }
     ));
 

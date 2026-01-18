@@ -125,9 +125,9 @@ void auton::seven_wing_right(lemlib::Chassis& chassis) {
     matchloader.set_value(false);
     delay(750);
 
-    chassis.moveToPoint(-36,-40.5, 1000, {.forwards = true}, false);
+    chassis.moveToPoint(-36,-40.5, 750, {.forwards = true}, false);
     intake.stop();
-    chassis.turnToHeading(270, 700);
+    chassis.turnToHeading(270, 300);
 
     intake.top_backwards();
     intake.bottom_backwards();
