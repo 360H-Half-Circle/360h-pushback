@@ -98,28 +98,9 @@ void disabled() {}
 void competition_initialize() {}
 
 void autonomous() {
-    // auton::seven_wing_right(chassis);
-    auton::sawp(chassis);
-    // switch (sec::auton)
-    // {
-    // case 0:
-    //     // some autos
-    //     auton::7_wing_right(chassis);
-    //     break;
-    
-    // default:
-    //     break;
-    // }
+    auton::four_wing_left(chassis);
+
 }
-
-// b is wing down is matchloader 
-// tank drive
-// top left back spin bvottom stage forward
-//bottom left back outake bottom intake
-// top right back is intake both
-// bottom right back is top outake bottom intake and midgoal piston retract
-
-// top right back
 
 void opcontrol() {
     Motor bottom_intake = Motor(-BOTTOM_INTAKE);

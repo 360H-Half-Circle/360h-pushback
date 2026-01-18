@@ -277,172 +277,116 @@ void auton::sawp(lemlib::Chassis& chassis) {
 void auton::seven_wing_left(lemlib::Chassis& chassis) {
     Intake& intake = Intake::getInstance();
     intake.set_anti_jam(false);
-    chassis.setPose(-49, 16, 90);
-    intake.bottom_forwards(127);
 
-    chassis.moveToPoint(-24, 23, 1000, {.forwards = true, .earlyExitRange = 0.1}, true);
-    delay(440);
+    hood.set_value(true);
+    midgoal.set_value(true);
+
+    chassis.setPose(-49, 17.5, 90);
+
+    intake.bottom_forwards();
+    intake.top_forwards();
+
+    chassis.moveToPoint(-23, 24, 750, {.forwards = true}, true);
+    delay(430);
     matchloader.set_value(true);
-    chassis.turnToPoint(-40,48, 700);
-    chassis.moveToPoint(-40,48, 3000);
-    intake.stop();
-    chassis.turnToHeading(270, 1500);
+    chassis.turnToPoint(-42, 52, 500);
+    chassis.moveToPoint(-42, 52, 1000);
+
+    chassis.turnToHeading(270, 250);
+    chassis.waitUntilDone();
 
     // alligned to matchloader
 
-    chassis.moveToPoint(-60,48, 3000,  {.maxSpeed = 70});
-    intake.set_anti_jam(false);
-    chassis.tank(70,70);
-    intake.bottom_forwards(127);
- 
-    delay(1000);
+    resetRobotPos(chassis, left_dist, "negative_y");
+    
+    intake.bottom_forwards();
+    intake.top_forwards();
+
+    chassis.moveToPoint(-65.5, 48.5, 1600, {.maxSpeed=100});
+    chassis.waitUntilDone();
+
+    chassis.tank(60, 60, true);
+    delay(200); 
+
+    resetRobotPos(chassis, right_dist, "positive_y");
+
+    intake.stop_top();
 
     // done matchloading
-    chassis.turnToHeading(270, 1500);
 
-    chassis.moveToPoint(-24,48, 4000, {.forwards = false, .maxSpeed = 82}, false);
+    chassis.moveToPoint(-24.5, 48.5, 1000, {.forwards=false, .maxSpeed=90});
+    chassis.waitUntilDone();
+
+    hood.set_value(false);
+    intake.top_forwards();
+    intake.bottom_forwards();
+
+    resetRobotPos(chassis, right_dist, "positive_y");
+    chassis.setPose(lemlib::Pose(-27.5, -chassis.getPose().y, chassis.getPose().theta));
+
+    delay(750);
+    matchloader.set_value(false);
+    delay(750);
+
+    chassis.moveToPoint(-36,-40.5, 750, {.forwards = true}, false);
     intake.stop();
-    intake.set_anti_jam(true);
-    intake.bottom_forwards(127);
-    intake.top_forwards(127);
+    chassis.turnToHeading(270, 300);
 
-    // scoring at the goal
-    // auto pose = chassis.getPose();
-    // std::cout 
-    // << "X: " << pose.x
-    // << " Y: " << pose.y
-    // << " Heading: " << pose.theta
-    // << std::endl;
-    chassis.tank(-60,-60);
-    delay(2000);
-    chassis.tank(0,0);
-    chassis.setPose(-25.1751 ,51.1889, chassis.getPose().theta);
-     intake.stop();
+    intake.top_backwards();
+    intake.bottom_backwards();
 
-    chassis.moveToPoint(-36,61, 1000, {.forwards = true}, false);
-    intake.stop();
-    chassis.turnToHeading(270, 700);
-    chassis.moveToPoint(-6,61, 5000, {.forwards = false, .maxSpeed = 60}, false);
+    chassis.moveToPoint(-12,-40.5, 10000, {.forwards = false, .maxSpeed = 60}, false);
 
+    chassis.setBrakeMode(E_MOTOR_BRAKE_HOLD);
 }
 
 void auton::four_wing_left(lemlib::Chassis& chassis) {
- Intake& intake = Intake::getInstance();
-    intake.set_anti_jam(false);
-    chassis.setPose(-49, 16, 90);
-    intake.bottom_forwards(127);
-
-    chassis.moveToPoint(-24, 23, 1000, {.forwards = true, .earlyExitRange = 0.1}, true);
-
-    delay(440);
-    matchloader.set_value(true);
-
-    chassis.turnToPoint(-40, 48, 700, {.earlyExitRange = 0.1});
-    chassis.moveToPoint(-40, 48, 3000, {.earlyExitRange = 0.1});
-
-    intake.stop();
-    chassis.turnToHeading(270, 1500, {.earlyExitRange = 0.1});
-
-    chassis.moveToPoint(-24, 48, 4000,
-        {.forwards = false, .maxSpeed = 82, .earlyExitRange = 0.1},
-        false
-    );
-    intake.stop();
-    intake.set_anti_jam(true);
-    intake.bottom_forwards(127);
-    intake.top_forwards(127);
-
-    // scoring at the goal
-    // auto pose = chassis.getPose();
-    // std::cout 
-    // << "X: " << pose.x
-    // << " Y: " << pose.y
-    // << " Heading: " << pose.theta
-    // << std::endl;
-    chassis.tank(-60,-60);
-    delay(2000);
-    chassis.tank(0,0);
-    chassis.setPose(-25.1751 ,51.1889, chassis.getPose().theta);
-     intake.stop();
-
-    chassis.moveToPoint(-36,61, 1000, {.forwards = true}, false);
-    intake.stop();
-    chassis.turnToHeading(270, 700);
-    chassis.moveToPoint(-6,61, 5000, {.forwards = false, .maxSpeed = 60}, false);
-
-}
-
-
-void oldsawp(lemlib::Chassis& chassis) {
     Intake& intake = Intake::getInstance();
     intake.set_anti_jam(false);
-    chassis.setPose(-50, -16, 0);
+
+    hood.set_value(true);
+    midgoal.set_value(true);
+
+    chassis.setPose(-49, 17.5, 90);
+
+    intake.bottom_forwards();
+    intake.top_forwards();
+
+    chassis.moveToPoint(-23, 24, 750, {.forwards = true}, true);
+    delay(430);
     matchloader.set_value(true);
-    chassis.moveToPoint(-50,-50, 1000, {.forwards = false}, false);
+    chassis.turnToPoint(-42, 52, 500);
+    chassis.moveToPoint(-42, 52, 1000);
+
+    chassis.turnToHeading(270, 250);
+    chassis.waitUntilDone();
+
+    resetRobotPos(chassis, right_dist, "positive_y");
+
+    // done matchloading
+
+    chassis.moveToPoint(-24.5, 48.5, 800, {.forwards=false, .maxSpeed=90});
+    chassis.waitUntilDone();
+
+    hood.set_value(false);
+    intake.top_forwards();
+    intake.bottom_forwards();
+
+    resetRobotPos(chassis, right_dist, "positive_y");
+    chassis.setPose(lemlib::Pose(-27.5, -chassis.getPose().y, chassis.getPose().theta));
+
+    delay(750);
+    matchloader.set_value(false);
+    delay(500);
+
+    chassis.moveToPoint(-36,-40.5, 750, {.forwards = true}, false);
+    intake.stop();
     chassis.turnToHeading(270, 300);
 
-    // alligned to matchloader
-    intake.bottom_forwards(127);
-    chassis.moveToPoint(-63,-52, 700,  {.maxSpeed = 70});
-    chassis.tank(100,100);
+    intake.top_backwards();
+    intake.bottom_backwards();
 
-    intake.set_anti_jam(false);
-    chassis.turnToPoint(-24,-52, 400, {.forwards = false, .earlyExitRange = 0.1}, false);
-    
+    chassis.moveToPoint(-12,-40.5, 10000, {.forwards = false, .maxSpeed = 60}, false);
 
-    chassis.moveToPoint(-24,-52, 4000, {.forwards = false, .maxSpeed = 80}, true);
-    delay(1200);
-    intake.stop();
-    intake.set_anti_jam(true);
-    intake.bottom_forwards(127);    
-    intake.top_forwards(127);
-    chassis.tank(-60,-60);
-    delay(1500);
-    matchloader.set_value(false);
-    chassis.tank(0,0);
-    intake.stop();
-    chassis.setPose(-25.1751 ,-51.1889, chassis.getPose().theta);
-
-    //done scoring
-
-    chassis.swingToPoint(-22,-30, DriveSide::RIGHT, 1000, {.maxSpeed = 80});
-    intake.bottom_forwards(127);
-    chassis.moveToPoint(-20,-28, 1000, {.forwards = true}, true);
-    delay(300);
-    matchloader.set_value(true);
-
-    //intaking first stack
-
-    chassis.turnToHeading(0, 500);
-    matchloader.set_value(false);
-    chassis.moveToPoint(-20,22, 2000, {.forwards = true, .maxSpeed = 80}, true);
-    delay(800);
-    matchloader.set_value(true);
-
-    chassis.turnToPoint(-40, 40, 700, {.earlyExitRange = 0.1});
-
-        //intaking second stack
-
-    intake.stop();
-    chassis.moveToPoint(-40, 40, 800, {.earlyExitRange = 0.1});
-    chassis.turnToHeading(270, 300, {.earlyExitRange = 0.1});
-
-
-
-    chassis.moveToPoint(-20,40, 1000, {.forwards = false, .maxSpeed = 80}, true);
-    delay(1200);
-    intake.set_anti_jam(true);
-    intake.bottom_forwards(127);    
-    intake.top_forwards(127);
-    chassis.tank(-60,-60);
-    delay(2000);
-    matchloader.set_value(false);
-    chassis.tank(0,0);
-    intake.stop();
-    chassis.setPose(-25.1751 ,47, chassis.getPose().theta);
-
-    chassis.moveToPoint(-25.1751,25.1751,1000);
-    chassis.turnToPoint(0,0,700, {.forwards = false});
-    chassis.moveToPoint(14,14,3000, {.forwards = false});
-
-} 
+    chassis.setBrakeMode(E_MOTOR_BRAKE_HOLD);
+}
