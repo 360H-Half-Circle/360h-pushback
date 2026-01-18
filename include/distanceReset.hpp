@@ -11,10 +11,10 @@ constexpr double WALL_X_MAX = 71.0;  // Positive X wall at X = +71 inches
 constexpr double WALL_Y_MIN = -71.0; // Negative Y wall at Y = -71 inches
 constexpr double WALL_Y_MAX = 71.0;  // Positive Y wall at Y = +71 inches
 // Sensor offsets from the robot's center along each axis (in inches)
-constexpr double FRONT_SENSOR_OFFSET = 2.7; 
-constexpr double BACK_SENSOR_OFFSET = -1.5;   
-constexpr double LEFT_SENSOR_OFFSET = 5.2;   
-constexpr double RIGHT_SENSOR_OFFSET = 5.2;  
+constexpr double FRONT_SENSOR_OFFSET = 4.5; 
+constexpr double BACK_SENSOR_OFFSET = -5;   
+constexpr double LEFT_SENSOR_OFFSET = 4;   
+constexpr double RIGHT_SENSOR_OFFSET = 4;  
 
 // Filtering constants
 constexpr int NUM_SAMPLES = 10;                // Averages 10 values of the distance sensor

@@ -7,14 +7,14 @@
 #include "autonomous.hpp"
 #include "distanceReset.hpp"
 
-#define TRACK_WIDTH 10.125
+#define TRACK_WIDTH 11.125
 
 using namespace pros::c;
 
 static Controller master(E_CONTROLLER_MASTER);
 
-static MotorGroup left_motor_group({-L_DRIVE_FRONT, L_DRIVE_MID, L_DRIVE_BACK}, MotorGears::blue, MotorUnits::rotations);
-static MotorGroup right_motor_group({R_DRIVE_FRONT, -R_DRIVE_MID, -R_DRIVE_BACK}, MotorGears::blue, MotorUnits::rotations);
+static MotorGroup left_motor_group({L_DRIVE_FRONT, -L_DRIVE_MID, -L_DRIVE_BACK}, MotorGears::blue, MotorUnits::rotations);
+static MotorGroup right_motor_group({-R_DRIVE_FRONT, R_DRIVE_MID, R_DRIVE_BACK}, MotorGears::blue, MotorUnits::rotations);
 static auto imu = Imu(INERTIAL_PORT);
 
 lemlib::Drivetrain drivetrain(
@@ -29,20 +29,20 @@ lemlib::Drivetrain drivetrain(
 lemlib::ControllerSettings lateral_controller(
     10, // proportional gain (kP)
     0, // integral gain (kI)
-    50, // derivative gain (kD)
+    40, // derivative gain (kD)
     3, // anti windup
     0.25, // small error range, in inches
     100, // small error range timeout, in millisecond
     3, // large error range, in inches
     500, // large error range timeout, in milliseconds
-    100 // maximum acceleration (slew)
+    50 // maximum acceleration (slew)
 );
 
 // angular PID controller
 lemlib::ControllerSettings angular_controller(
     3, // proportional gain (kP)
     0.1, // integral gain (kI)
-    13, // derivative gain (kD)
+    21, // derivative gain (kD)
     3, // anti windup
     1, // small error range, in degrees
     100, // small error range timeout, in milliseconds
@@ -129,8 +129,8 @@ void opcontrol() {
     auto wing = ADIDigitalOut(WING_PORT);
     auto matchloader = ADIDigitalOut(MATCH_LOADER_PORT);
     auto midgoal = ADIDigitalOut(MIDGOAL_PORT);
-
-    wing.set_value(true);
+    auto intakelift = ADIDigitalOut(LIFT_INTAKE);
+    auto hood = ADIDigitalOut(HOOD_PORT);
 
     std::unordered_map<controller_digital_e_t, std::function<void()>> toggle_controls;
     std::unordered_map<controller_digital_e_t, std::pair<std::function<void(bool)>, std::function<void()>>> hold_controls;
@@ -138,16 +138,12 @@ void opcontrol() {
 
     intake.set_anti_jam(false);
 
-    hold_controls.emplace(E_CONTROLLER_DIGITAL_B, std::make_pair(
-        [&](bool firstPress) {
-            wing.set_value(false);
-        },
-        [&]() {
-            wing.set_value(true);
-        }
-    ));
+    midgoal.set_value(true);
+    hood.set_value(false);
+    wing.set_value(true);
 
-    hold_controls.emplace(E_CONTROLLER_DIGITAL_DOWN, std::make_pair(
+
+    hold_controls.emplace(E_CONTROLLER_DIGITAL_B, std::make_pair(
         [&](bool firstPress) {
             matchloader.set_value(true);
         },
@@ -156,35 +152,47 @@ void opcontrol() {
         }
     ));
 
-    hold_controls.emplace(E_CONTROLLER_DIGITAL_R1, std::make_pair(
+    hold_controls.emplace(E_CONTROLLER_DIGITAL_DOWN, std::make_pair(
         [&](bool firstPress) {
-            intake.bottom_forwards(127);
-            // While L1 is held, top intake should brake
-            // intake.top_intake.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
-            intake.stop_top();
+            intake.bottom_backwards();
+            intake.top_backwards();
+            intakelift.set_value(true);
         },
         [&]() {
-            intake.stop_bottom();
-            // When released, stop top intake (return to coast)
-            // intake.top_intake.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
-            intake.stop_top();;
+            intake.stop();
+            intakelift.set_value(false);
+        }
+    ));
+
+    hold_controls.emplace(E_CONTROLLER_DIGITAL_R1, std::make_pair(
+        [&](bool firstPress) {
+            // intake.top_forwards();
+            intake.top_intake.move_velocity(400);
+            intake.bottom_forwards();
+            midgoal.set_value(true);
+            hood.set_value(true);
+        },
+        [&]() {
+            intake.stop();   
+            hood.set_value(false);
         }
     ));
 
     hold_controls.emplace(E_CONTROLLER_DIGITAL_R2, std::make_pair(
         [&](bool firstPress) {
-            intake.bottom_backwards(127);
-            intake.top_backwards(127);
+            wing.set_value(false);
         },
         [&]() {
-            intake.stop();
+            wing.set_value(true);
         }
     ));
 
     hold_controls.emplace(E_CONTROLLER_DIGITAL_L1, std::make_pair(
         [&](bool firstPress) {
-            intake.bottom_forwards(127);
-            intake.top_forwards(127);
+            intake.top_forwards();
+            intake.bottom_forwards();
+            midgoal.set_value(true);
+            hood.set_value(false);
         },
         [&]() {
             intake.stop();
@@ -193,17 +201,15 @@ void opcontrol() {
 
     hold_controls.emplace(E_CONTROLLER_DIGITAL_L2, std::make_pair(
         [&](bool firstPress) {
-            // if (firstPress) l2_press_ms = pros::millis();
-
-            // const uint32_t dt = pros::millis() - l2_press_ms;
-            midgoal.set_value(true);
-            intake.top_forwards(127);
-            intake.bottom_forwards(127);
+            intake.top_forwards(80);
+            intake.bottom_forwards();
+            midgoal.set_value(false);
+            hood.set_value(true);
         },
         [&]() {
-            intake.stop_top();
-            intake.stop_bottom();
-            midgoal.set_value(false);
+            intake.stop();
+            midgoal.set_value(true);
+            hood.set_value(false);
         }
     ));
 

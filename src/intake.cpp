@@ -12,7 +12,7 @@ void Intake::initialize() {
 
     // Make "forwards" in code match physical forwards.
     // If your intake spins the wrong way, flip these booleans.
-    bottom_intake.set_reversed(true);
+    // bottom_intake.set_reversed(true);
     top_intake.set_reversed(true);
 
     antijam = true;

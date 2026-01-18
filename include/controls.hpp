@@ -5,25 +5,28 @@
 
 #include "pros/motor_group.hpp"
 
-#define L_DRIVE_FRONT 13
-#define L_DRIVE_MID 15
-#define L_DRIVE_BACK 12
+#define L_DRIVE_FRONT 12
+#define L_DRIVE_MID 11
+#define L_DRIVE_BACK 13
 
-#define R_DRIVE_FRONT 16
+#define R_DRIVE_FRONT 19
 #define R_DRIVE_MID 18
-#define R_DRIVE_BACK 17
+#define R_DRIVE_BACK 15
 
 #define INERTIAL_PORT 14
-#define BOTTOM_INTAKE 19
-#define TOP_INTAKE 10
+#define BOTTOM_INTAKE 17
+#define TOP_INTAKE 16
 
-#define WING_PORT 3
-#define MIDGOAL_PORT 2
-#define MATCH_LOADER_PORT 1
+#define WING_PORT 6
+#define MIDGOAL_PORT 5
+#define MATCH_LOADER_PORT 7
+#define LIFT_INTAKE 8
+#define HOOD_PORT 4
 
-#define FRONT_DISTANCE_SENSOR 20
-#define BACK_DISTANCE_SENSOR 21
-#define LEFT_DISTANCE_SENSOR 22
-#define RIGHT_DISTANCE_SENSOR 23
+#define FRONT_DISTANCE_SENSOR 9
+#define BACK_DISTANCE_SENSOR 20
+#define LEFT_DISTANCE_SENSOR 10
+#define RIGHT_DISTANCE_SENSOR 8
+
 
 using namespace pros;
