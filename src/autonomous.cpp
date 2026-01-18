@@ -241,7 +241,7 @@ void auton::sawp(lemlib::Chassis& chassis) {
     midgoal.set_value(true);
     delay(100);
 
-    chassis.moveToPoint(-43.5, 40.5, 1250);
+    chassis.moveToPoint(-43.5, 40.5, 1000);
     chassis.waitUntilDone();
 
     matchloader.set_value(true);
