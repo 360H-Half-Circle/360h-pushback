@@ -98,8 +98,10 @@ void disabled() {}
 void competition_initialize() {}
 
 void autonomous() {
-    // auton::four_wing_left(chassis);
-    auton::four_wing_right(chassis);
+    auton::seven_wing_left(chassis);
+    // auton::seven_wing_right(chassis);
+    // auton::four_wing_right(chassis);
+    // auton::sawp(chassis);
 }
 
 void opcontrol() {
