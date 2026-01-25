@@ -137,13 +137,13 @@ void initialize() {
     }};
 }
 
-void disabled() {}
+void disabled() { }
 
 void competition_initialize() {}
 
 void autonomous() {
-    auton::auton_skills(chassis);
-    // auton::seven_wing_right(chassis);
+    // auton::auton_skills(chassis);
+    auton::seven_wing_right(chassis);
     // auton::four_wing_right(chassis);
     // auton::sawp(chassis);
 }
