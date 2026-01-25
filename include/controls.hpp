@@ -13,7 +13,7 @@
 #define R_DRIVE_MID 18
 #define R_DRIVE_BACK 15
 
-#define INERTIAL_PORT 14
+#define INERTIAL_PORT 20
 #define BOTTOM_INTAKE 17
 #define TOP_INTAKE 16
 
@@ -24,9 +24,10 @@
 #define HOOD_PORT 4
 
 #define FRONT_DISTANCE_SENSOR 9
-#define BACK_DISTANCE_SENSOR 20
+#define BACK_DISTANCE_SENSOR 7
 #define LEFT_DISTANCE_SENSOR 10
 #define RIGHT_DISTANCE_SENSOR 8
 
+#define PERP_TRACKING_WHEEL 14
 
 using namespace pros;

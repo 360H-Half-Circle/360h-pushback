@@ -6,6 +6,7 @@
 #include "intake.hpp"
 #include "autonomous.hpp"
 #include "distanceReset.hpp"
+#include "miku/mcl.hpp"
 
 #define TRACK_WIDTH 11.125
 
@@ -13,8 +14,8 @@ using namespace pros::c;
 
 static Controller master(E_CONTROLLER_MASTER);
 
-static MotorGroup left_motor_group({L_DRIVE_FRONT, -L_DRIVE_MID, -L_DRIVE_BACK}, MotorGears::blue, MotorUnits::rotations);
-static MotorGroup right_motor_group({-R_DRIVE_FRONT, R_DRIVE_MID, R_DRIVE_BACK}, MotorGears::blue, MotorUnits::rotations);
+static MotorGroup left_motor_group({L_DRIVE_FRONT, -L_DRIVE_MID, -L_DRIVE_BACK}, MotorGears::blue, MotorUnits::degrees);
+static MotorGroup right_motor_group({-R_DRIVE_FRONT, R_DRIVE_MID, R_DRIVE_BACK}, MotorGears::blue, MotorUnits::degrees);
 static auto imu = Imu(INERTIAL_PORT);
 
 lemlib::Drivetrain drivetrain(
@@ -51,10 +52,13 @@ lemlib::ControllerSettings angular_controller(
     0 // maximum acceleration (slew)
 );
 
+pros::Rotation perp_sens(-PERP_TRACKING_WHEEL);
+lemlib::TrackingWheel horizontal_tracking_wheel(&perp_sens, lemlib::Omniwheel::NEW_2, -1.5);
+
 lemlib::OdomSensors sensors(
     nullptr, // vertical tracking wheel 1, set to null
     nullptr, // vertical tracking wheel 2, set to nullptr as we are using IMEs
-    nullptr, // horizontal tracking wheel 1
+    &horizontal_tracking_wheel, // horizontal tracking wheel 1
     nullptr, // horizontal tracking wheel 2, set to nullptr as we don't have a second one
     &imu // inertial sensor
 );
@@ -71,14 +75,54 @@ static lemlib::Chassis& getChassis() {
 
 Intake& intake = Intake::getInstance();
 
+miku::Distance front_distance(FRONT_DISTANCE_SENSOR, 0, 0, 0.0f);                // front (0)
+miku::Distance back_distance(BACK_DISTANCE_SENSOR, 0, 0, M_PI);                  // back 
+miku::Distance left_distance(LEFT_DISTANCE_SENSOR, 0, 0, -M_PI_2);                 // left (-90deg)
+miku::Distance right_distance(RIGHT_DISTANCE_SENSOR, 0, 0, M_PI_2);                 // right (90deg)
+
+ParticleFilter mcl({
+    std::make_shared<miku::Distance>(left_distance),
+    std::make_shared<miku::Distance>(right_distance),
+    std::make_shared<miku::Distance>(front_distance),
+    std::make_shared<miku::Distance>(back_distance)
+}, chassis);
+
+float prev_left_raw = 0.0f;
+float prev_right_raw = 0.0f;
+compass_degrees prev_theta_raw = 0.0f;
+#define WHEEL_DIAMETER 3.25f
+#define GEAR_RATIO (36.0f / 48.0f)
+
+float average_position(MotorGroup& group) {
+    std::vector<pros::MotorGears> gearsets = group.get_gearing_all();
+    std::vector<double> positions = group.get_position_all();
+    std::vector<float> distances;
+    for (int i = 0; i < group.size(); i++) {
+        float in;
+        switch (gearsets[i]) {
+            case pros::MotorGears::red: in = 100; break;
+            case pros::MotorGears::green: in = 200; break;
+            case pros::MotorGears::blue: in = 600; break;
+            default: in = 200; break;
+        }
+        distances.push_back(positions[i] * (WHEEL_DIAMETER * M_PI) * (450 / in));
+    }
+
+    float sum = 0;
+    for (auto d : distances) {
+        sum += d;
+    }
+
+    return sum/distances.size();
+}
+
 void initialize() {
     lcd::initialize();
     // sec::init();
 
     intake.initialize();
-
     chassis.calibrate(true);
-
+  
     Task lemlib_print_task{[] {
         // print pose
         while (true) {
@@ -98,7 +142,7 @@ void disabled() {}
 void competition_initialize() {}
 
 void autonomous() {
-    auton::seven_wing_left(chassis);
+    auton::auton_skills(chassis);
     // auton::seven_wing_right(chassis);
     // auton::four_wing_right(chassis);
     // auton::sawp(chassis);
@@ -136,11 +180,28 @@ void opcontrol() {
         }
     ));
 
+    hold_controls.emplace(E_CONTROLLER_DIGITAL_RIGHT, std::make_pair(
+        [&](bool firstPress) {
+            chassis.tank(-80, -80, true);
+        },
+        [&]() {
+            chassis.tank(0, 0, true);
+        }
+    ));
+
+    int skills_down_held = 0;
+
     hold_controls.emplace(E_CONTROLLER_DIGITAL_DOWN, std::make_pair(
         [&](bool firstPress) {
-            intake.bottom_backwards();
+            if (skills_down_held >= 300) {
+                intake.bottom_intake.move_velocity(-175);
+            } else {
+                intake.bottom_intake.move_velocity(-100);
+            }
             intake.top_backwards();
             intakelift.set_value(true);
+
+            skills_down_held++;
         },
         [&]() {
             intake.stop();
@@ -150,8 +211,8 @@ void opcontrol() {
 
     hold_controls.emplace(E_CONTROLLER_DIGITAL_R1, std::make_pair(
         [&](bool firstPress) {
-            // intake.top_forwards();
-            intake.top_intake.move_velocity(400);
+            intake.top_forwards();
+            // intake.top_intake.move_velocity(300);
             intake.bottom_forwards();
             midgoal.set_value(true);
             hood.set_value(true);
@@ -185,7 +246,8 @@ void opcontrol() {
 
     hold_controls.emplace(E_CONTROLLER_DIGITAL_L2, std::make_pair(
         [&](bool firstPress) {
-            intake.top_forwards(80);
+            // intake.top_forwards(65);
+            intake.top_intake.move_velocity(300);
             intake.bottom_forwards();
             midgoal.set_value(false);
             hood.set_value(true);
@@ -197,10 +259,19 @@ void opcontrol() {
         }
     ));
 
+    hold_controls.emplace(E_CONTROLLER_DIGITAL_X, std::make_pair(
+        [&](bool firstPress) {
+            chassis.tank(50, 50, true);
+        },
+        [&]() {
+            chassis.tank(0, 0, true);
+        }
+    ));
+
     while (true) {
         float rightX = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
         float leftY = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
         left_motor_group.move(master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y));
         right_motor_group.move(master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y));
         
