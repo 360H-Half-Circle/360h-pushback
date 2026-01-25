@@ -9,6 +9,7 @@
 #include "miku/mcl.hpp"
 
 #define TRACK_WIDTH 11.125
+#define IS_DRIVER_SKILLS false
 
 using namespace pros::c;
 
@@ -143,10 +144,14 @@ void competition_initialize() {}
 
 void autonomous() {
     // auton::auton_skills(chassis);
-    auton::seven_wing_right(chassis);
+    // auton::seven_wing_right(chassis);
     // auton::four_wing_right(chassis);
+    // auton::seven_wing_left(chassis);
+    auton::four_wing_left(chassis);
     // auton::sawp(chassis);
 }
+
+bool killcode = false;
 
 void opcontrol() {
     Motor bottom_intake = Motor(-BOTTOM_INTAKE);
@@ -193,11 +198,16 @@ void opcontrol() {
 
     hold_controls.emplace(E_CONTROLLER_DIGITAL_DOWN, std::make_pair(
         [&](bool firstPress) {
-            if (skills_down_held >= 300) {
-                intake.bottom_intake.move_velocity(-175);
+            if (IS_DRIVER_SKILLS) {
+                if (skills_down_held >= 300) {
+                    intake.bottom_intake.move_velocity(-175);
+                } else {
+                    intake.bottom_intake.move_velocity(-100);
+                }
             } else {
-                intake.bottom_intake.move_velocity(-100);
+                intake.bottom_intake.move_velocity(-300);
             }
+            
             intake.top_backwards();
             intakelift.set_value(true);
 
@@ -246,8 +256,8 @@ void opcontrol() {
 
     hold_controls.emplace(E_CONTROLLER_DIGITAL_L2, std::make_pair(
         [&](bool firstPress) {
-            // intake.top_forwards(65);
-            intake.top_intake.move_velocity(300);
+            if (IS_DRIVER_SKILLS) intake.top_intake.move_velocity(300);
+            else intake.top_forwards();
             intake.bottom_forwards();
             midgoal.set_value(false);
             hood.set_value(true);
@@ -274,7 +284,7 @@ void opcontrol() {
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
         left_motor_group.move(master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y));
         right_motor_group.move(master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y));
-        
+
         for (auto control : toggle_controls) {
             if (master.get_digital_new_press(control.first) && !held.contains(control.first)) {
                 control.second();
