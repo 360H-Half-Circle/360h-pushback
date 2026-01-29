@@ -45,7 +45,7 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     chassis.turnToPoint(-20, 20, 1000, {.forwards=true});
     chassis.waitUntilDone();
 
-    chassis.moveToPoint(-29, 29, 1000, {.forwards=true, .maxSpeed=30});
+    chassis.moveToPoint(-28, 28, 1000, {.forwards=true, .maxSpeed=30});
     chassis.waitUntilDone();
 
     delay(500);
@@ -338,16 +338,15 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     chassis.swingToHeading(0, DriveSide::RIGHT, 500);
     chassis.waitUntilDone();
 
-    matchloader.set_value(true);
+    // matchloader.set_value(true);
     delay(100);
 
     intake.bottom_forwards();
     intake.top_forwards();
     hood.set_value(true);
 
-    chassis.tank(80, 80, true);
-    delay(800);
-    chassis.tank(0, 0, true);
+    chassis.moveToPoint(-64, 3, 1000, {.minSpeed=60});
+    chassis.waitUntilDone();
 
     delay(5000);
 }
