@@ -9,7 +9,7 @@
 #include "miku/mcl.hpp"
 
 #define TRACK_WIDTH 11.125
-#define IS_DRIVER_SKILLS false
+#define IS_DRIVER_SKILLS true
 
 using namespace pros::c;
 
@@ -119,35 +119,46 @@ float average_position(MotorGroup& group) {
 
 void initialize() {
     lcd::initialize();
-    // sec::init();
+    sec::init();
 
     intake.initialize();
     chassis.calibrate(true);
   
-    Task lemlib_print_task{[] {
-        // print pose
-        while (true) {
-            auto pose = chassis.getPose();
-            lcd::print(0, "X: %.2f in", pose.x);
-            pros::delay(1);
-            lcd::print(1, "Y: %.2f in", pose.y);
-            pros::delay(1);
-            lcd::print(2, "Theta: %.2f deg", pose.theta);
-            pros::delay(100);
-        }
-    }};
+    // Task lemlib_print_task{[] {
+    //     // print pose
+    //     while (true) {
+    //         auto pose = chassis.getPose();
+    //         lcd::print(0, "X: %.2f in", pose.x);
+    //         pros::delay(1);
+    //         lcd::print(1, "Y: %.2f in", pose.y);
+    //         pros::delay(1);
+    //         lcd::print(2, "Theta: %.2f deg", pose.theta);
+    //         pros::delay(100);
+    //     }
+    // }};
 }
 
 void disabled() { }
 
 void competition_initialize() {}
 
+/*
+
+1: sawp
+2: skills
+3: RIGHT 4W
+4: RIGHT 7W
+5: LEFT 4W
+6: LEFT 7W
+
+*/
+
 void autonomous() {
     // auton::auton_skills(chassis);
     // auton::seven_wing_right(chassis);
-    // auton::four_wing_right(chassis);
+    // auton::seven_wing_right(chassis);
     // auton::seven_wing_left(chassis);
-    auton::four_wing_left(chassis);
+    // auton::four_wing_left(chassis);
     // auton::sawp(chassis);
 }
 
@@ -195,23 +206,22 @@ void opcontrol() {
     ));
 
     int skills_down_held = 0;
+    int skills_low_held = 0;
 
     hold_controls.emplace(E_CONTROLLER_DIGITAL_DOWN, std::make_pair(
         [&](bool firstPress) {
             if (IS_DRIVER_SKILLS) {
-                if (skills_down_held >= 300) {
-                    intake.bottom_intake.move_velocity(-175);
+                if (skills_low_held >= 30) {
+                    intake.bottom_intake.move_velocity(-155);
                 } else {
                     intake.bottom_intake.move_velocity(-100);
                 }
             } else {
-                intake.bottom_intake.move_velocity(-300);
+                intake.bottom_backwards();
             }
             
             intake.top_backwards();
             intakelift.set_value(true);
-
-            skills_down_held++;
         },
         [&]() {
             intake.stop();
@@ -256,22 +266,32 @@ void opcontrol() {
 
     hold_controls.emplace(E_CONTROLLER_DIGITAL_L2, std::make_pair(
         [&](bool firstPress) {
-            if (IS_DRIVER_SKILLS) intake.top_intake.move_velocity(300);
-            else intake.top_forwards();
-            intake.bottom_forwards();
             midgoal.set_value(false);
+            delay(50);
+            if (IS_DRIVER_SKILLS) {
+                if (skills_down_held >= 20) {
+                    intake.top_intake.move_velocity(330);
+                } else {
+                    intake.top_intake.move_velocity(250);
+                }  
+            } else intake.top_forwards();
+            intake.bottom_forwards();
             hood.set_value(true);
+
+            std::cout << "Skills down held: " << skills_down_held << std::endl;
         },
         [&]() {
             intake.stop();
             midgoal.set_value(true);
             hood.set_value(true);
+
+            skills_down_held = 0;
         }
     ));
 
     hold_controls.emplace(E_CONTROLLER_DIGITAL_X, std::make_pair(
         [&](bool firstPress) {
-            chassis.tank(50, 50, true);
+            chassis.tank(60, 60, true);
         },
         [&]() {
             chassis.tank(0, 0, true);
@@ -284,6 +304,18 @@ void opcontrol() {
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
         left_motor_group.move(master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y));
         right_motor_group.move(master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y));
+
+        if (master.get_digital(E_CONTROLLER_DIGITAL_L2)) {
+            skills_down_held += 1;
+        } else {
+            skills_down_held = 0;
+        }
+
+        if (master.get_digital(E_CONTROLLER_DIGITAL_DOWN)) {
+            skills_low_held += 1;
+        } else {
+            skills_low_held = 0;
+        }
 
         for (auto control : toggle_controls) {
             if (master.get_digital_new_press(control.first) && !held.contains(control.first)) {

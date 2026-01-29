@@ -20,31 +20,31 @@ void Intake::initialize() {
 }
 
 void Intake::update() {
-    if (antijam) {
-        if (moving && (abs(bottom_intake.get_actual_velocity()) < 15)) {
-            counter++;
+    // if (antijam) {
+    //     if (moving && (abs(bottom_intake.get_actual_velocity()) < 15)) {
+    //         counter++;
 
-            if (counter >= 5) {
-                antijam = false;
-                counter = 0;
-                Task t{[&] {
-                    bottom_intake.move(-127);
-                    delay(70);
+    //         if (counter >= 5) {
+    //             antijam = false;
+    //             counter = 0;
+    //             Task t{[&] {
+    //                 bottom_intake.move(-127);
+    //                 delay(70);
 
-                    std::cout << "[Intake] Anti-jam activated\n";
+    //                 std::cout << "[Intake] Anti-jam activated\n";
 
-                    if (master.get_digital(E_CONTROLLER_DIGITAL_R1)) {
-                        bottom_intake.move(volts);
-                    } else {
-                        bottom_intake.move(0);
-                    }
-                    antijam = true;
-                }};
-            }
-        } else {
-            counter = 0;
-        }
-    }
+    //                 if (master.get_digital(E_CONTROLLER_DIGITAL_R1)) {
+    //                     bottom_intake.move(volts);
+    //                 } else {
+    //                     bottom_intake.move(0);
+    //                 }
+    //                 antijam = true;
+    //             }};
+    //         }
+    //     } else {
+    //         counter = 0;
+    //     }
+    // }
 }
 
 void Intake::bottom_forwards(int power) {

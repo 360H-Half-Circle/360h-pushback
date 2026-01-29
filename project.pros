@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "hcu-pushback",
+    "project_name": "hcu-driverskills",
     "target": "v5",
     "templates": {
       "LemLib": {

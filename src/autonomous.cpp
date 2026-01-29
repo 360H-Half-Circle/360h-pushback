@@ -342,7 +342,7 @@ void auton::four_wing_right(lemlib::Chassis& chassis) {
 
     // done matchloading
 
-    chassis.moveToPoint(-24.5, -48.5, 500, {.forwards=false, .maxSpeed=90});
+    chassis.moveToPoint(-24.5, -46.5, 500, {.forwards=false, .maxSpeed=90});
     chassis.waitUntilDone();
 
     hood.set_value(false);
@@ -359,14 +359,14 @@ void auton::four_wing_right(lemlib::Chassis& chassis) {
     
     delay(250);
 
-    chassis.moveToPoint(-36,-38, 750, {.forwards = true}, false);
+    chassis.moveToPoint(-36,-37, 750, {.forwards = true}, false);
     // intake.stop();
     chassis.turnToHeading(270, 300);
 
     intake.top_backwards();
     intake.bottom_backwards();
 
-    chassis.moveToPoint(-11,-38, 10000, {.forwards=false, .maxSpeed=127}, false);
+    chassis.moveToPoint(-11,-37, 10000, {.forwards=false, .maxSpeed=127}, false);
 
     chassis.setBrakeMode(E_MOTOR_BRAKE_HOLD);
 }
@@ -411,7 +411,7 @@ void auton::seven_wing_right(lemlib::Chassis& chassis) {
 
     // done matchloading
 
-    chassis.moveToPoint(-24.5, -48.5, 1000, {.forwards=false, .maxSpeed=90});
+    chassis.moveToPoint(-24.5, -46.5, 1000, {.forwards=false, .maxSpeed=90});
     chassis.waitUntilDone();
 
     hood.set_value(false);
@@ -566,7 +566,7 @@ void auton::sawp(lemlib::Chassis& chassis) {
 
     resetRobotPos(chassis, right_dist, "positive_y");
 
-    chassis.moveToPoint(-24.5, 48.5, 1000, {.forwards=false, .maxSpeed=70});
+    chassis.moveToPoint(-24.5, 46.5, 1000, {.forwards=false, .maxSpeed=70});
     chassis.waitUntilDone();
 
     hood.set_value(false);
@@ -694,14 +694,14 @@ void auton::four_wing_left(lemlib::Chassis& chassis) {
 
     delay(250);
 
-    chassis.moveToPoint(-36,-38, 750, {.forwards = true}, false);
+    chassis.moveToPoint(-36,-37, 750, {.forwards = true}, false);
     intake.stop();
     chassis.turnToHeading(270, 300);
 
     intake.top_backwards();
     intake.bottom_backwards();
 
-    chassis.moveToPoint(-11,-38, 10000, {.forwards=false, .maxSpeed=60}, false);
+    chassis.moveToPoint(-11,-37, 10000, {.forwards=false, .maxSpeed=60}, false);
 
     chassis.setBrakeMode(E_MOTOR_BRAKE_HOLD);
 }
