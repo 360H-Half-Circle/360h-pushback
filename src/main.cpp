@@ -119,23 +119,23 @@ float average_position(MotorGroup& group) {
 
 void initialize() {
     lcd::initialize();
-    sec::init();
+    // sec::init();
 
     intake.initialize();
     chassis.calibrate(true);
   
-    // Task lemlib_print_task{[] {
-    //     // print pose
-    //     while (true) {
-    //         auto pose = chassis.getPose();
-    //         lcd::print(0, "X: %.2f in", pose.x);
-    //         pros::delay(1);
-    //         lcd::print(1, "Y: %.2f in", pose.y);
-    //         pros::delay(1);
-    //         lcd::print(2, "Theta: %.2f deg", pose.theta);
-    //         pros::delay(100);
-    //     }
-    // }};
+    Task lemlib_print_task{[] {
+        // print pose
+        while (true) {
+            auto pose = chassis.getPose();
+            lcd::print(0, "X: %.2f in", pose.x);
+            pros::delay(1);
+            lcd::print(1, "Y: %.2f in", pose.y);
+            pros::delay(1);
+            lcd::print(2, "Theta: %.2f deg", pose.theta);
+            pros::delay(100);
+        }
+    }};
 }
 
 void disabled() { }
@@ -154,7 +154,7 @@ void competition_initialize() {}
 */
 
 void autonomous() {
-    // auton::auton_skills(chassis);
+    auton::auton_skills(chassis);
     // auton::seven_wing_right(chassis);
     // auton::seven_wing_right(chassis);
     // auton::seven_wing_left(chassis);
@@ -165,6 +165,8 @@ void autonomous() {
 bool killcode = false;
 
 void opcontrol() {
+    autonomous();
+
     Motor bottom_intake = Motor(-BOTTOM_INTAKE);
     Motor top_intake = Motor(-TOP_INTAKE);
     static uint32_t l2_press_ms = 0;
