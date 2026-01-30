@@ -1,6 +1,8 @@
 #pragma once
 
 #include "lemlib/api.hpp"
+#include "controls.hpp"
+#include "pros/distance.hpp"
 
 namespace auton {
     void seven_wing_right(lemlib::Chassis& chassis);
