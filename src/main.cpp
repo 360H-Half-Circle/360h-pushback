@@ -165,8 +165,6 @@ void autonomous() {
 bool killcode = false;
 
 void opcontrol() {
-    autonomous();
-
     Motor bottom_intake = Motor(-BOTTOM_INTAKE);
     Motor top_intake = Motor(-TOP_INTAKE);
     static uint32_t l2_press_ms = 0;
@@ -188,6 +186,13 @@ void opcontrol() {
     midgoal.set_value(true);
     hood.set_value(true);
     wing.set_value(true);
+
+    hold_controls.emplace(E_CONTROLLER_DIGITAL_LEFT, std::make_pair([&](bool firstPress) {
+        
+    },
+    [&]() {
+
+    }));
 
     hold_controls.emplace(E_CONTROLLER_DIGITAL_B, std::make_pair(
         [&](bool firstPress) {
