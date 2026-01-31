@@ -154,17 +154,19 @@ void competition_initialize() {}
 */
 
 void autonomous() {
-    auton::auton_skills(chassis);
+    // auton::auton_skills(chassis);
     // auton::seven_wing_right(chassis);
     // auton::seven_wing_right(chassis);
     // auton::seven_wing_left(chassis);
     // auton::four_wing_left(chassis);
-    // auton::sawp(chassis);
+    auton::sawp(chassis);
 }
 
 bool killcode = false;
 
 void opcontrol() {
+    autonomous();
+
     Motor bottom_intake = Motor(-BOTTOM_INTAKE);
     Motor top_intake = Motor(-TOP_INTAKE);
     static uint32_t l2_press_ms = 0;
