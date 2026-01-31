@@ -38,7 +38,7 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
         matchloader.set_value(true);
     });
 
-    chassis.moveToPoint(-64.5, 34, 5000, {.maxSpeed=80, .minSpeed=65});
+    chassis.moveToPoint(-64.5, 34, 5000, {.maxSpeed=90, .minSpeed=65});
     chassis.waitUntilDone();
 
     // matchloader.set_value(false);
@@ -194,7 +194,7 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     // done matchloading
     // score
 
-    chassis.moveToPoint(24.5, 47.5, 1000, {.forwards=false, .maxSpeed=70});
+    chassis.moveToPoint(26.5, 47.5, 1000, {.forwards=false, .maxSpeed=65});
     chassis.waitUntilDone();
 
     hood.set_value(false);
@@ -240,7 +240,7 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
         matchloader.set_value(true);
     });
 
-    chassis.moveToPoint(64.5, -40, 5000, {.maxSpeed=75, .minSpeed=60});
+    chassis.moveToPoint(64.5, -40, 5000, {.maxSpeed=85, .minSpeed=60});
     chassis.waitUntilDone();
 
     error = front_dist.get_distance() - target;
