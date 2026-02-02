@@ -154,12 +154,12 @@ void competition_initialize() {}
 */
 
 void autonomous() {
-    auton::auton_skills(chassis);
+    // auton::auton_skills(chassis);
     // auton::seven_wing_right(chassis);
     // auton::seven_wing_right(chassis);
     // auton::seven_wing_left(chassis);
     // auton::four_wing_left(chassis);
-    // auton::sawp(chassis);
+    auton::sawp(chassis);
 }
 
 bool killcode = false;
@@ -241,7 +241,6 @@ void opcontrol() {
     hold_controls.emplace(E_CONTROLLER_DIGITAL_R1, std::make_pair(
         [&](bool firstPress) {
             intake.top_forwards();
-            // intake.top_intake.move_velocity(300);
             intake.bottom_forwards();
             midgoal.set_value(true);
             hood.set_value(true);

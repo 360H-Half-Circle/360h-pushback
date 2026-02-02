@@ -20,58 +20,17 @@ void Intake::initialize() {
 }
 
 void Intake::update() {
-    // if (antijam) {
-    //     if (moving && (abs(bottom_intake.get_actual_velocity()) < 15)) {
-    //         counter++;
-
-    //         if (counter >= 5) {
-    //             antijam = false;
-    //             counter = 0;
-    //             Task t{[&] {
-    //                 bottom_intake.move(-127);
-    //                 delay(70);
-
-    //                 std::cout << "[Intake] Anti-jam activated\n";
-
-    //                 if (master.get_digital(E_CONTROLLER_DIGITAL_R1)) {
-    //                     bottom_intake.move(volts);
-    //                 } else {
-    //                     bottom_intake.move(0);
-    //                 }
-    //                 antijam = true;
-    //             }};
-    //         }
-    //     } else {
-    //         counter = 0;
-    //     }
-    // }
+    if (antijam) {
+        
+    }
 }
 
 void Intake::bottom_forwards(int power) {
-    if (moving) return;
-
-    double pct = power / 127.0;
-    bottom_intake.move_velocity(600 * pct);
-
-    volts = power;
-    
-    Task t{[&] {
-        delay(50);
-        moving = true;
-    }};
+    bottom_intake.move(power);
 }
 
-void Intake::bottom_backwards(int power) {
-    if (moving) return;
-    
+void Intake::bottom_backwards(int power) {    
     bottom_intake.move(-power);
-
-    volts = -power;
-    
-    Task t{[&] {
-        delay(50);
-        moving = true;
-    }};
 }
 
 void Intake::top_forwards(int power) {
