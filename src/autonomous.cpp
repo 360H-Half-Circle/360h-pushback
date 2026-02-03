@@ -121,16 +121,20 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     chassis.waitUntilDone();
     if (override_pressed()) return;
 
+    ///////////////////////////////////////////////
+    //--------------MID GOAL----------------//
+    ///////////////////////////////////////////////
     midgoal.set_value(false);
     delay(100);
     chassis.tank(-30, -30, true);
     intake.bottom_forwards();
-    intake.top_intake.move_velocity(200);
+    // intake.bottom_forwards(90);
+    intake.top_intake.move_velocity(500);
     delay(500);
     chassis.tank(0, 0, true);
-    intake.top_intake.move_velocity(350);
+    intake.top_intake.move_velocity(300);
     delay(1850);
-    intake.top_intake.move_velocity(500);
+    intake.top_intake.move_velocity(300);
     delay(1000);
 
     intake.stop_top();
@@ -244,6 +248,16 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     chassis.waitUntilDone();
     if (override_pressed()) return;
 
+    // HOOD auto
+    chassis.moveToPoint(chassis.getPose().x + 5, chassis.getPose().y, 500);
+    chassis.waitUntilDone();
+
+    hood.set_value(true);
+
+    chassis.tank(-40, -40, true);
+    delay(300);
+    chassis.tank(0, 0, true);
+
     // done scoring
 
     intake.stop();
@@ -324,11 +338,14 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     chassis.tank(30, 30, true);
     delay(500);
 
+    ///////////////////////////////////////////////
+    //--------------LOW GOAL----------------//
+    ///////////////////////////////////////////////
     intake.top_backwards();
     intake.bottom_intake.move_velocity(-300);
     chassis.tank(0, 30, true);
     delay(500);
-    intake.bottom_intake.move_velocity(-300);
+    intake.bottom_intake.move_velocity(-370);
     delay(1500);
     intake.bottom_intake.move_velocity(-200);
     delay(1000);
@@ -465,6 +482,17 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     chassis.moveToPoint(24.5, -48.5, 2100, {.forwards=false, .maxSpeed=60});
     chassis.waitUntilDone();
     if (override_pressed()) return;
+
+    // HOOD auto
+    chassis.moveToPoint(chassis.getPose().x - 5, chassis.getPose().y, 500);
+    chassis.waitUntilDone();
+
+    hood.set_value(true);
+
+    chassis.tank(-40, -40, true);
+    delay(300);
+    chassis.tank(0, 0, true);
+
     
     // done scoring
     
@@ -670,7 +698,7 @@ void auton::sawp(lemlib::Chassis& chassis) {
     intake.bottom_forwards();
     intake.top_forwards();
 
-    chassis.moveToPoint(-60.5, -46.5, 500, {.maxSpeed=60});
+    chassis.moveToPoint(-67.5, -46.5, 500, {.maxSpeed=60});
     chassis.waitUntilDone();
 
     chassis.tank(30, 30, true);
@@ -713,14 +741,14 @@ void auton::sawp(lemlib::Chassis& chassis) {
     // delay(100);
     matchloader.set_value(false);
 
-    chassis.turnToPoint(-20.5, 24.5, 500);
+    chassis.turnToPoint(-26.5, 24.5, 500);
     chassis.waitUntilDone();
 
     Task d2([&] {
         delay(650);
         matchloader.set_value(true);
     });
-    chassis.moveToPoint(-24.5, 24.5, 1000);
+    chassis.moveToPoint(-26.5, 24.5, 1000);
     chassis.waitUntilDone();
 
     matchloader.set_value(false);
@@ -754,7 +782,7 @@ void auton::sawp(lemlib::Chassis& chassis) {
     intake.bottom_forwards();
     intake.top_forwards();
 
-    chassis.moveToPoint(-65.5, 48.5, 750, {.maxSpeed=70});
+    chassis.moveToPoint(-67.5, 48.5, 750, {.maxSpeed=60});
     chassis.waitUntilDone();
 
     chassis.tank(30, 30, true);
@@ -763,6 +791,138 @@ void auton::sawp(lemlib::Chassis& chassis) {
     resetRobotPos(chassis, right_dist, "positive_y");
 
     chassis.moveToPoint(-24.5, 46.5, 1000, {.forwards=false, .maxSpeed=70});
+    delay(800);
+    hood.set_value(false);
+    chassis.waitUntilDone();
+
+    intake.top_forwards();
+    intake.bottom_forwards();
+
+    chassis.tank(-80, -80, true);
+    delay(1000);
+}
+
+void auton::sawp_low(lemlib::Chassis& chassis) {
+    Intake& intake = Intake::getInstance();
+    intake.set_anti_jam(true);
+
+    Task d([&] {
+        delay(14900);
+        intake.bottom_forwards();
+        intake.top_forwards();
+    });
+
+    chassis.setPose(-46.5, 0.25, 180);
+    
+    intake.bottom_forwards();
+    hood.set_value(true);
+    midgoal.set_value(true);
+    
+    chassis.moveToPoint(-46.5, -5, 500, {.minSpeed=50});
+    chassis.waitUntilDone();
+
+    chassis.moveToPoint(-46.5, 46.5, 1250, {.forwards=false});
+    chassis.waitUntilDone();
+
+    intake.stop_bottom();
+
+    matchloader.set_value(true);
+    chassis.turnToHeading(270, 500);
+    chassis.waitUntilDone();
+
+    resetRobotPos(chassis, right_dist, "positive_y");
+    
+    intake.bottom_forwards();
+    intake.top_forwards();
+
+    chassis.moveToPoint(-67.5, 46.5, 500, {.maxSpeed=60});
+    chassis.waitUntilDone();
+
+    chassis.tank(30, 30, true);
+    delay(200); 
+
+    resetRobotPos(chassis, right_dist, "positive_y");
+
+    chassis.turnToPoint(-24.5, 47.5, 300, {.forwards=false}, false);
+
+    chassis.moveToPoint(-24.5, 47.5, 1000, {.forwards=false, .maxSpeed=70});
+    delay(800);
+    hood.set_value(false);
+    chassis.waitUntilDone();
+
+    intake.top_forwards();
+    intake.bottom_forwards();
+
+    chassis.tank(-60, -60, true);
+    delay(750);
+
+    chassis.setPose(lemlib::Pose(-27.5, chassis.getPose().y, chassis.getPose().theta));
+    resetRobotPos(chassis, right_dist, "positive_y");
+
+    matchloader.set_value(false);
+    delay(500);
+
+    // chassis.swingToPoint(-22.5, -22.5, DriveSide::RIGHT, 1000);
+    chassis.swingToHeading(180, DriveSide::LEFT, 500);
+    chassis.waitUntilDone();
+    
+    hood.set_value(true);
+
+    Task d1([&] {
+        delay(400);
+        matchloader.set_value(true);
+    });
+    chassis.moveToPoint(-21.5, 20.5, 500);
+    chassis.waitUntilDone();
+
+    // delay(100);
+    matchloader.set_value(false);
+
+    chassis.turnToPoint(-26.5, -24.5, 500);
+    chassis.waitUntilDone();
+
+    Task d2([&] {
+        delay(650);
+        matchloader.set_value(true);
+    });
+    chassis.moveToPoint(-26.5, -24.5, 1000);
+    chassis.waitUntilDone();
+
+    matchloader.set_value(false);
+
+    chassis.turnToPoint(-7, -13, 500);
+    chassis.waitUntilDone();
+    chassis.moveToPoint(-7, 13, 1000);
+    chassis.waitUntilDone();
+
+    intake.top_backwards();
+    intake.bottom_backwards(90);
+    delay(500);
+
+    intake.stop();
+
+    chassis.moveToPoint(-48.5, -46.5, 1000, {.forwards=false});
+    chassis.waitUntilDone();
+
+    matchloader.set_value(true);
+
+    chassis.turnToHeading(270, 300);
+    chassis.waitUntilDone();
+
+    resetRobotPos(chassis, left_dist, "negative_y");
+
+    intake.bottom_forwards();
+    intake.top_forwards();
+
+    chassis.moveToPoint(-67.5, -48.5, 750, {.maxSpeed=60});
+    chassis.waitUntilDone();
+
+    chassis.tank(30, 30, true);
+    delay(200);
+
+    resetRobotPos(chassis, left_dist, "negative_y");
+
+    chassis.moveToPoint(-24.5, -46.5, 1000, {.forwards=false, .maxSpeed=70});
     delay(800);
     hood.set_value(false);
     chassis.waitUntilDone();
@@ -814,7 +974,7 @@ void auton::seven_wing_left(lemlib::Chassis& chassis) {
 
     // done matchloading
 
-    chassis.moveToPoint(-24.5, 48.5, 1000, {.forwards=false, .maxSpeed=90});
+    chassis.moveToPoint(-24.5, 49, 1000, {.forwards=false, .maxSpeed=90});
     chassis.waitUntilDone();
 
     hood.set_value(false);
