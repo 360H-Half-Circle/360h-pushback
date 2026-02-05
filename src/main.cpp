@@ -9,7 +9,7 @@
 #include "miku/mcl.hpp"
 
 #define TRACK_WIDTH 11.125
-#define IS_DRIVER_SKILLS true
+#define IS_DRIVER_SKILLS false
 
 using namespace pros::c;
 
@@ -155,10 +155,10 @@ void competition_initialize() {}
 
 void autonomous() {
     // auton::sawp_low(chassis);
-    auton::auton_skills(chassis);
+    // auton::auton_skills(chassis);
     // auton::four_wing_right(chassis);
     // auton::seven_wing_right(chassis);
-    // auton::seven_wing_left(chassis);
+    auton::seven_wing_left(chassis);
     // auton::four_wing_left(chassis);
     // auton::sawp(chassis);
 }
