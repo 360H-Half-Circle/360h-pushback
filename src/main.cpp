@@ -158,9 +158,9 @@ void autonomous() {
     // auton::auton_skills(chassis);
     // auton::four_wing_right(chassis);
     // auton::seven_wing_right(chassis);
-    auton::seven_wing_left(chassis);
+    // auton::seven_wing_left(chassis);
     // auton::four_wing_left(chassis);
-    // auton::sawp(chassis);
+    auton::sawp(chassis);
 }
 
 bool killcode = false;
