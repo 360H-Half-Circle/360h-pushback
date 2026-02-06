@@ -160,7 +160,8 @@ void autonomous() {
     // auton::seven_wing_right(chassis);
     // auton::seven_wing_left(chassis);
     // auton::four_wing_left(chassis);
-    auton::sawp(chassis);
+    // auton::sawp(chassis);
+    auton::nine_split_right(chassis);
 }
 
 bool killcode = false;

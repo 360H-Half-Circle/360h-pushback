@@ -11,6 +11,8 @@ namespace auton {
     void seven_wing_left(lemlib::Chassis& chassis);
     void four_wing_left(lemlib::Chassis& chassis);
 
+    void nine_split_right(lemlib::Chassis& chassis);
+
     void sawp(lemlib::Chassis& chassis);
     void sawp_low(lemlib::Chassis& chassis);
 
