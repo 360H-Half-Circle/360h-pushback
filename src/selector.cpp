@@ -87,15 +87,15 @@ std::vector<lv_obj_t*> sawpButtons;
 #define BLUE_RIGHT 3
 
 namespace sec {
-    int auton;
+    std::string auton = "none";
 
     static void set_auto_text(lv_obj_t* button, std::string text) {
         lv_obj_t* label = lv_obj_get_child(button, 0);
-        if (label != nullptr) {
-            lv_label_set_text(label, text.c_str());
-        } else {
-            std::cout << "Label not found" << std::endl;
+        if (label == nullptr) {
+            label = lv_label_create(button);
         }
+
+        lv_label_set_text(label, text.c_str());
     }
 
     static void showButtons(std::vector<lv_obj_t*> buttons) {
@@ -154,40 +154,16 @@ namespace sec {
 
     static void secondButtonsEventHandler(lv_event_t * e) {
         lv_obj_t *btn = lv_event_get_target(e);
+        lv_obj_t* label = lv_obj_get_child(btn, 0);
 
-        if (equals(btn, redRight_sawpBtn)) {
-            auton = 0;
-        } else if (equals(btn, blueRight_sawpBtn)) {
-            auton = 1;
-        } else if (equals(btn, redRight_sawpBtn)) {
-            auton = 2;
-        } else if (equals(btn, R7WLBtn)) {
-            auton = 3;
-        } else if (equals(btn, B7WLBtn)) {
-            auton = 4;
-        } else if (equals(btn, R7WRBtn)) {
-            auton = 5;
-        } else if (equals(btn, B7WRBtn)) {
-            auton = 6;
-        } else if (equals(btn, R4WLBtn)) {
-            auton = 7;
-        } else if (equals(btn, B4WLBtn)) {
-            auton = 8;
-        } else if (equals(btn, R4WRBtn)) {
-            auton = 9;
-        } else if (equals(btn, B4WRBtn)) {
-            auton = 10;
-        } else if (equals(btn, R9SLBtn)) {
-            auton = 11;
-        } else if (equals(btn, B9SLBtn)) {
-            auton = 12;
-        } else if (equals(btn, R9SRBtn)) {
-            auton = 13;
-        } else if (equals(btn, B9SRBtn)) {
-            auton = 14;
+        if (label == nullptr) {
+            lv_label_set_text_fmt(titleLabel, "Selected Auton: none");   
+            return;
         }
+
+        auton = std::string(lv_label_get_text(label));
         
-        lv_label_set_text_fmt(titleLabel, "Selected Auton: %s", autonNames[auton]);
+        lv_label_set_text_fmt(titleLabel, "Selected Auton: %s", lv_label_get_text(label));
     }
 
     static void makeButtons(int x, std::vector<lv_obj_t*> &buttons, int type) {
@@ -199,8 +175,8 @@ namespace sec {
             lv_obj_set_style_pad_left(button, 2, LV_PART_MAIN);  // Or 0 for no padding
             lv_obj_set_style_pad_right(button, 2, LV_PART_MAIN);  // Or 0 for no padding
 
-            lv_obj_t *label = lv_label_create(button);
-            lv_label_set_text(label, "no auto");
+            // lv_obj_t *label = lv_label_create(button);
+            // lv_label_set_text(label, "no auto");
             auto align = LV_ALIGN_LEFT_MID;
             if (type == BLUE_RIGHT || type == BLUE_LEFT) {
                 align = LV_ALIGN_RIGHT_MID;
@@ -403,10 +379,14 @@ namespace sec {
         blueRightBtn = blueRightBtn;
 
         // FINISHED AUTONS:
-        // set_auto_text(redNeg_6p1CornerBtn, "R 6.1 C");
-        // set_auto_text(redNeg_6p1LadderBtn, "R 6.1 L");
-        // set_auto_text(redNeg_6p1CornerNoSweepBtn, "R 6.1 X");
-        // set_auto_text(redPos_6_LadderBtn, "R 6 L");
-        // set_auto_text(bluePos_6_LadderBtn, "B 6 L");
+        set_auto_text(R7WLBtn, "R7WL");
+        set_auto_text(R7WRBtn, "R7WR");
+        set_auto_text(B7WLBtn, "B7WL");
+        set_auto_text(B7WRBtn, "B7WR");
+        
+        set_auto_text(R4WLBtn, "R4WL");
+        set_auto_text(R4WRBtn, "R4WR");
+        set_auto_text(B4WLBtn, "B4WL");
+        set_auto_text(B4WRBtn, "B4WR");
     }
 }

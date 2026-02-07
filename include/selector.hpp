@@ -10,7 +10,7 @@
 
 namespace sec{
 
-extern int auton;
+extern std::string auton;
 extern int color;
 // const char *bee[] = {AUTONS, ""};
 void init(int hue = HUE, int default_auton = DEFAULT, const char **autons = AUTONS);

@@ -154,14 +154,30 @@ void competition_initialize() {}
 */
 
 void autonomous() {
-    // auton::sawp_low(chassis);
-    // auton::auton_skills(chassis);
-    // auton::four_wing_right(chassis);
-    // auton::seven_wing_right(chassis);
-    // auton::seven_wing_left(chassis);
-    // auton::four_wing_left(chassis);
-    // auton::sawp(chassis);
-    auton::nine_split_right(chassis);
+    // auton::nine_split_right(chassis);
+    auton::auton_skills(chassis);
+    return;
+
+    // LEFT AUTOS
+    if (sec::auton == "R4WL" || sec::auton == "B4WL") {
+        auton::four_wing_left(chassis);
+    } 
+    if (sec::auton == "R7WL" || sec::auton == "B7WL") {
+        auton::seven_wing_left(chassis);
+    } 
+
+    // RIGHT AUTOS
+    if (sec::auton == "R4WR" || sec::auton == "B4WR") {
+        auton::four_wing_right(chassis);
+    } 
+    if (sec::auton == "R7WR" || sec::auton == "B7WR") {
+        auton::seven_wing_right(chassis);
+    } 
+
+    // SOLO AWP
+    if (sec::auton == "R SAWP" || sec::auton == "B SAWP") {
+        auton::sawp(chassis);
+    } 
 }
 
 bool killcode = false;
