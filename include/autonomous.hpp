@@ -14,7 +14,7 @@ namespace auton {
     void nine_split_right(lemlib::Chassis& chassis);
 
     void sawp(lemlib::Chassis& chassis);
-    void sawp_low(lemlib::Chassis& chassis);
+    void sawp_safe(lemlib::Chassis& chassis);
 
     void auton_skills(lemlib::Chassis& chassis);
 }

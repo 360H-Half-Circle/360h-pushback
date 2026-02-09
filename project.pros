@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "test",
+    "project_name": "4wre",
     "target": "v5",
     "templates": {
       "LemLib": {
@@ -300,7 +300,7 @@
     "upload_options": {
       "description": "360H North Dakota Signature Code",
       "icon": "pizza",
-      "slot": 1,
+      "slot": 2,
       "after": "screen"
     },
     "use_early_access": false

@@ -154,8 +154,11 @@ void competition_initialize() {}
 */
 
 void autonomous() {
+    // auton::seven_wing_right(chassis);
+    auton::four_wing_right(chassis);
+    // auton::sawp_safe(chassis);
     // auton::nine_split_right(chassis);
-    auton::auton_skills(chassis);
+    // auton::auton_skills(chassis);
     return;
 
     // LEFT AUTOS
