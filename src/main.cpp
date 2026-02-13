@@ -155,6 +155,7 @@ void competition_initialize() {}
 */
 
 void autonomous() {
+    // auton::sawp(chassis);
     // auton::seven_wing_right(chassis);
     // auton::four_wing_right(chassis);
     // auton::sawp_safe(chassis);
@@ -278,8 +279,13 @@ void opcontrol() {
                 } else {
                     intake.bottom_intake.move_velocity(-400);
                 }
-                delay(800);
-                intake.top_backwards();
+                if (firstPress) {
+                    Task e([&]() {
+                        delay(500);
+                        if (!master.get_digital(E_CONTROLLER_DIGITAL_DOWN)) return;
+                        intake.top_backwards();
+                    });
+                }
             } else {
                 intake.bottom_backwards();
                 intake.top_backwards();

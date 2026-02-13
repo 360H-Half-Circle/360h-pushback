@@ -19,7 +19,7 @@ int sign(float value) {
     return value > 0 ? 1 : -1;
 }
 
-int CROSS_TARGET = 870;
+int CROSS_TARGET = 760;
 int MLOAD_TARGET = 1500;
 
 bool override_pressed() {
@@ -112,9 +112,9 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
         }
 
         float power = error * 0.2;
-        if (abs(power) < 15) {
-            power = sign(power) * 15;
-        }
+        // if (abs(power) < 15) {
+        //     power = sign(power) * 15;
+        // }
         chassis.tank(power, power, true);
         error = front_dist.get_distance() - target;
 
@@ -158,7 +158,7 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     delay(100);
     chassis.tank(-30, -30, true);
     intake.bottom_forwards();
-    intake.top_intake.move_velocity(325);
+    intake.top_intake.move_velocity(200);
     delay(500);
     // chassis.turnToHeading(315, 500);
     // chassis.waitUntilDone();
@@ -298,7 +298,7 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     //-----------BLUE CROSS SECTION--------------//
     ///////////////////////////////////////////////
     resetRobotPos(chassis, left_dist, "positive_y");
-    chassis.setPose(lemlib::Pose(27.5, chassis.getPose().y, chassis.getPose().theta));
+    chassis.setPose(lemlib::Pose(27.5, chassis.getPose().y, 90));
     intake.top_forwards();
     intake.bottom_forwards();
     delay(100);
@@ -316,7 +316,7 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
         delay(1000);
         // while (front_dist.get_distance() > MLOAD_TARGET - 200) {
         // }
-        matchloader.set_value(true);
+        // matchloader.set_value(true);
     });
 
     chassis.moveToPoint(64.5, -40, 5000, {.maxSpeed=75, .minSpeed=60});
@@ -337,9 +337,9 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
         }
 
         float power = error * 0.2;
-        if (abs(power) < 15) {
-            power = sign(power) * 15;
-        }
+        // if (abs(power) < 15) {
+        //     power = sign(power) * 15;
+        // }
         chassis.tank(power, power, true);
         error = front_dist.get_distance() - target;
 
@@ -360,11 +360,11 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
 
     matchloader.set_value(false);
 
-    chassis.turnToPoint(17, 14, 500, {.forwards=true});
+    chassis.turnToPoint(17, 17, 500, {.forwards=true});
     chassis.waitUntilDone();
     if (override_pressed()) return;
 
-    chassis.moveToPoint(17, 16, 750, {.forwards=true, .maxSpeed=80});;
+    chassis.moveToPoint(17, 17, 750, {.forwards=true, .maxSpeed=80});;
     chassis.waitUntilDone();
     if (override_pressed()) return;
 
@@ -718,7 +718,7 @@ void auton::sawp(lemlib::Chassis& chassis) {
     chassis.waitUntilDone();
 
     chassis.tank(30, 30, true);
-    delay(200); 
+    delay(300); 
 
     resetRobotPos(chassis, left_dist, "negative_y");
 
@@ -764,19 +764,11 @@ void auton::sawp(lemlib::Chassis& chassis) {
     chassis.moveToPoint(-26.5, 24.5, 1000);
     chassis.waitUntilDone();
 
-    // chassis.turnToPoint(-48.5, 49.5, 500);
-    // chassis.waitUntilDone();
-
-    // chassis.moveToPoint(-48.5, 49.5, 1000);
-    // chassis.waitUntilDone();
-
-    chassis.moveToPose(-48.5, 49.5, 270, 1000, {.lead=0.1});
+    chassis.moveToPoint(-50.5, 43.5, 1000);
     chassis.waitUntilDone();
 
-    // chassis.turnToHeading(270, 300);
+    // chassis.moveToPose(-48.5, 44.5, 270, 1000, {.lead=0.1});
     // chassis.waitUntilDone();
-
-    // resetRobotPos(chassis, right_dist, "positive_y");
 
     chassis.moveToPoint(-24.5, 46.5, 1000, {.forwards=false, .maxSpeed=70});
     delay(800);
@@ -808,20 +800,17 @@ void auton::sawp(lemlib::Chassis& chassis) {
 
     resetRobotPos(chassis, right_dist, "positive_y");
 
-    chassis.moveToPoint(-15, 8, 1000, {.forwards=false, .minSpeed=50});
+    chassis.moveToPoint(-16, 9, 1300, {.forwards=false, .minSpeed=30});
     chassis.waitUntilDone();
 
     // chassis.tank(-30, -30, true);
     delay(200);
+    hoodBottom.set_value(true);
     midgoal.set_value(false);
 
     intake.bottom_forwards();
     intake.top_forwards(90);
-    delay(800);
-
-    intake.stop();
-    midgoal.set_value(true);
-    delay(100);
+    delay(1000);
 }
 
 void auton::sawp_safe(lemlib::Chassis& chassis) {
