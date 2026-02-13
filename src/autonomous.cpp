@@ -158,14 +158,14 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     delay(100);
     chassis.tank(-30, -30, true);
     intake.bottom_forwards();
-    intake.top_intake.move_velocity(200);
-    delay(500);
+    intake.top_intake.move_velocity(300);
+    delay(1250);
     // chassis.turnToHeading(315, 500);
     // chassis.waitUntilDone();
 
     chassis.tank(0, 0, true);
     intake.top_intake.move_velocity(300);
-    delay(1850);
+    delay(600);
 
     intake.stop_top();
     hoodBottom.set_value(false);

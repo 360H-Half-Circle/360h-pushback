@@ -337,10 +337,10 @@ void opcontrol() {
             hoodBottom.set_value(true);
             delay(50);
             if (IS_DRIVER_SKILLS) {
-                if (skills_down_held >= 20) {
-                    intake.top_intake.move_velocity(300);
+                if (skills_down_held >= 40) {
+                    intake.top_intake.move_velocity(100);
                 } else {
-                    intake.top_intake.move_velocity(150);
+                    intake.top_intake.move_velocity(300);
                 }  
             } else intake.top_forwards();
             intake.bottom_forwards();
