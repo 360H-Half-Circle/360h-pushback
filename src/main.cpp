@@ -9,7 +9,7 @@
 #include "miku/mcl.hpp"
 
 #define TRACK_WIDTH 11.125
-#define IS_DRIVER_SKILLS false
+#define IS_DRIVER_SKILLS true
 
 using namespace pros::c;
 
@@ -123,7 +123,8 @@ void initialize() {
 
     intake.initialize();
     chassis.calibrate(true);
-  
+    delay(100);
+
     // Task lemlib_print_task{[] {
     //     // print pose
     //     while (true) {
@@ -155,10 +156,10 @@ void competition_initialize() {}
 
 void autonomous() {
     // auton::seven_wing_right(chassis);
-    auton::four_wing_right(chassis);
+    // auton::four_wing_right(chassis);
     // auton::sawp_safe(chassis);
     // auton::nine_split_right(chassis);
-    // auton::auton_skills(chassis);
+    auton::auton_skills(chassis);
     return;
 
     // LEFT AUTOS
@@ -197,6 +198,7 @@ void opcontrol() {
     auto midgoal = ADIDigitalOut(MIDGOAL_PORT);
     auto intakelift = ADIDigitalOut(LIFT_INTAKE);
     auto hood = ADIDigitalOut(HOOD_PORT);
+    auto hoodBottom = ADIDigitalOut(HOOD_BOTTOM_PORT);
 
     std::unordered_map<controller_digital_e_t, std::function<void()>> toggle_controls;
     std::unordered_map<controller_digital_e_t, std::pair<std::function<void(bool)>, std::function<void()>>> hold_controls;
@@ -209,6 +211,7 @@ void opcontrol() {
     midgoal.set_value(true);
     hood.set_value(true);
     wing.set_value(true);
+    hoodBottom.set_value(false);
 
     // hold_controls.emplace(E_CONTROLLER_DIGITAL_LEFT, std::make_pair([&](bool firstPress) {
     //     midgoal.set_value(false);
@@ -271,15 +274,16 @@ void opcontrol() {
             if (IS_DRIVER_SKILLS) {
                 intakelift.set_value(true);
                 if (skills_low_held >= 30) {
-                    intake.bottom_intake.move_velocity(-155);
+                    intake.bottom_intake.move_velocity(-300);
                 } else {
-                    intake.bottom_intake.move_velocity(-100);
+                    intake.bottom_intake.move_velocity(-400);
                 }
+                delay(800);
+                intake.top_backwards();
             } else {
                 intake.bottom_backwards();
+                intake.top_backwards();
             }
-            
-            intake.top_backwards();
         },
         [&]() {
             intake.stop();
@@ -324,12 +328,13 @@ void opcontrol() {
     hold_controls.emplace(E_CONTROLLER_DIGITAL_L2, std::make_pair(
         [&](bool firstPress) {
             midgoal.set_value(false);
+            hoodBottom.set_value(true);
             delay(50);
             if (IS_DRIVER_SKILLS) {
                 if (skills_down_held >= 20) {
-                    intake.top_intake.move_velocity(330);
+                    intake.top_intake.move_velocity(300);
                 } else {
-                    intake.top_intake.move_velocity(250);
+                    intake.top_intake.move_velocity(150);
                 }  
             } else intake.top_forwards();
             intake.bottom_forwards();
@@ -341,6 +346,7 @@ void opcontrol() {
             intake.stop();
             midgoal.set_value(true);
             hood.set_value(true);
+            hoodBottom.set_value(false);
 
             skills_down_held = 0;
         }
