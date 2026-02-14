@@ -98,7 +98,7 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     chassis.waitUntilDone();
     if (override_pressed()) return;
 
-    // distancePid(chassis, front_dist, CROSS_TARGET, 1000, 0.5);
+    // // distancePid(chassis, front_dist, CROSS_TARGET, 1000, 0.5);
     auto start_time = std::chrono::high_resolution_clock::now();
 
     int target = CROSS_TARGET;
@@ -164,8 +164,8 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     // chassis.waitUntilDone();
 
     chassis.tank(0, 0, true);
-    intake.top_intake.move_velocity(300);
-    delay(600);
+    intake.top_intake.move_velocity(150);
+    delay(1500);
 
     intake.stop_top();
     hoodBottom.set_value(false);
@@ -368,11 +368,11 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     chassis.waitUntilDone();
     if (override_pressed()) return;
 
-    chassis.turnToPoint(8, 12, 500, {.forwards=true});
+    chassis.turnToPoint(9, 11, 500, {.forwards=true});
     chassis.waitUntilDone();
     if (override_pressed()) return;
 
-    chassis.moveToPoint(8, 12, 700, {.forwards=true, .maxSpeed=40});;
+    chassis.moveToPoint(9, 11, 700, {.forwards=true, .maxSpeed=40});;
     chassis.waitUntilDone();
     if (override_pressed()) return;
 
@@ -491,7 +491,7 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     // start matchloading
 
     // matchload
-    chassis.moveToPoint(-67.5, -44, 1500, {.maxSpeed=40});
+    chassis.moveToPoint(-67.5, -46, 1500, {.maxSpeed=40});
     chassis.waitUntilDone();
     if (override_pressed()) return;
 

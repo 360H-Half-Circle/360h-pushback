@@ -155,12 +155,12 @@ void competition_initialize() {}
 */
 
 void autonomous() {
-    auton::sawp(chassis);
+    // auton::sawp(chassis);
     // auton::seven_wing_right(chassis);
     // auton::four_wing_right(chassis);
     // auton::sawp_safe(chassis);
     // auton::nine_split_right(chassis);
-    // auton::auton_skills(chassis);
+    auton::auton_skills(chassis);
     return;
 
     // LEFT AUTOS
@@ -427,12 +427,12 @@ void opcontrol() {
 
         temperatureSum = 0.0;
 
-        master.print(0, 0, "Top: %.2f°C", top_intake.get_temperature());
-        pros::delay(1);
-        master.print(1, 0, "Bottom: %.2f°C", bottom_intake.get_temperature());
-        pros::delay(1);
-        master.print(2, 0, "Drive: %.2f°C", averageTemperature);
-        pros::delay(1);
+        // master.print(0, 0, "Top: %.2f°C", top_intake.get_temperature());
+        // pros::delay(1);
+        // master.print(1, 0, "Bottom: %.2f°C", bottom_intake.get_temperature());
+        // pros::delay(1);
+        // master.print(2, 0, "Drive: %.2f°C", averageTemperature);
+        // pros::delay(1);
         // master.print(2,0,"Heading: %.2f", imu.get_heading());
         // pros::delay(1);
     }
