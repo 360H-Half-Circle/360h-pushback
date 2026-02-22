@@ -9,7 +9,7 @@
 #include "miku/mcl.hpp"
 
 #define TRACK_WIDTH 11.125
-#define IS_DRIVER_SKILLS false
+#define IS_DRIVER_SKILLS true
 
 using namespace pros::c;
 
@@ -64,10 +64,24 @@ lemlib::OdomSensors sensors(
     &imu // inertial sensor
 );
 
+// input curve for throttle input during driver control
+lemlib::ExpoDriveCurve throttle_curve(3, // joystick deadband out of 127
+                                     10, // minimum output where drivetrain will move out of 127
+                                     1.019 // expo curve gain
+);
+
+// input curve for steer input during driver control
+lemlib::ExpoDriveCurve steer_curve(0, // joystick deadband out of 127
+                                  10, // minimum output where drivetrain will move out of 127
+                                  1.019 // expo curve gain
+);
+
 lemlib::Chassis chassis(drivetrain, // drivetrain settings
     lateral_controller, // lateral PID settings
     angular_controller, // angular PID settings
-    sensors // odometry sensors
+    sensors, // odometry sensors
+    &throttle_curve, // throttle input curve
+    &steer_curve // steer input curve
 );
 
 static lemlib::Chassis& getChassis() {
@@ -301,6 +315,7 @@ void opcontrol() {
 
     hold_controls.emplace(E_CONTROLLER_DIGITAL_R1, std::make_pair(
         [&](bool firstPress) {
+            if (master.get_digital(E_CONTROLLER_DIGITAL_L1)) return;
             intake.top_forwards();
             intake.bottom_forwards();
             midgoal.set_value(true);
@@ -370,11 +385,10 @@ void opcontrol() {
     ));
 
     while (true) {
-        float rightX = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+        float rightY = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
         float leftY = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
-        left_motor_group.move(master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y));
-        right_motor_group.move(master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y));
+                                    
+        chassis.tank(leftY, rightY, false);
 
         if (master.get_digital(E_CONTROLLER_DIGITAL_L2)) {
             skills_down_held += 1;
