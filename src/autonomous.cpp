@@ -1050,19 +1050,23 @@ void auton::four_wing_left(lemlib::Chassis& chassis) {
     delay(430);
     matchloader.set_value(true);
     // chassis.turnToPoint(-40,48, 500);
-    chassis.moveToPoint(-40, 45, 1000, {.forwards=false});
-
-    chassis.turnToHeading(270, 400);
-    chassis.waitUntilDone();
+    // chassis.moveToPoint(-27, 48, 1000, {.forwards=false});
 
     // alligned to matchloader
-
-    resetRobotPos(chassis, right_dist, "positive_y");
     
     // done matchloading
 
-    chassis.moveToPoint(-24.5, 48.5, 560, {.forwards=false});
+    chassis.moveToPose(-27.5, 48, 230, 1000, {.forwards=false, .lead=0.1, .minSpeed=80, .earlyExitRange=2});
     chassis.waitUntilDone();
+
+    // chassis.swingToHeading(270, DriveSide::LEFT, 500, {.direction=AngularDirection::CW_CLOCKWISE, .minSpeed=90});
+
+    chassis.tank(-30, -127, true);
+    delay(500);
+    chassis.tank(0, 0, true);
+    
+    // chassis.moveToPoint(-24.5, 48.5, 300, {.forwards=false, .minSpeed=100});
+    // chassis.waitUntilDone();
 
     hood.set_value(false);
     intake.top_forwards();
@@ -1076,19 +1080,21 @@ void auton::four_wing_left(lemlib::Chassis& chassis) {
     resetRobotPos(chassis, right_dist, "positive_y");
     chassis.setPose(lemlib::Pose(-27.5, -chassis.getPose().y, chassis.getPose().theta));
 
-    delay(250);
-
-    chassis.moveToPoint(-36,-37, 750, {.forwards = true}, false);
+    chassis.moveToPoint(-36,-40, 750, {.forwards = true, .minSpeed=30, .earlyExitRange=2}, false);
     intake.stop();
     chassis.turnToHeading(270, 300);
+    chassis.waitUntilDone();
 
     intake.top_backwards();
     intake.bottom_backwards();
 
     chassis.setBrakeMode(E_MOTOR_BRAKE_HOLD);
 
-    chassis.moveToPoint(-11,-38, 10000, {.forwards=false, .minSpeed=80, .earlyExitRange=1}, false);
+    chassis.moveToPoint(-11,-40, 10000, {.forwards=false, .minSpeed=80, .earlyExitRange=1}, false);
     chassis.waitUntilDone();
+
+    // chassis.tank(20, 90, true);
+    // delay(5000);
 
     chassis.swingToHeading(190, DriveSide::LEFT, 10000, {.maxSpeed=90});
 }
