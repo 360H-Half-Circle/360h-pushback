@@ -133,7 +133,7 @@ float average_position(MotorGroup& group) {
 
 void initialize() {
     lcd::initialize();
-    sec::init();
+    // sec::init();
 
     intake.initialize();
     chassis.calibrate(true);
@@ -143,8 +143,7 @@ void initialize() {
     //     // print pose
     //     while (true) {
     //         auto pose = chassis.getPose();
-    //         lcd::print(0, "X: %.2f in", pose.x);
-    //         pros::delay(1);
+            
     //         lcd::print(1, "Y: %.2f in", pose.y);
     //         pros::delay(1);
     //         lcd::print(2, "Theta: %.2f deg", pose.theta);
@@ -172,10 +171,10 @@ void autonomous() {
     // auton::sawp(chassis);
     // auton::seven_wing_right(chassis);
     // auton::seven_wing_left(chassis);
-    auton::four_wing_left(chassis);
+    // auton::four_wing_left(chassis);
     // auton::sawp_safe(chassis);
     // auton::nine_split_right(chassis);
-    // auton::auton_skills(chassis);
+    auton::auton_skills(chassis);
     // auton::seven_split_right(chassis);
     return;
 
@@ -290,10 +289,10 @@ void opcontrol() {
         [&](bool firstPress) {
             if (IS_DRIVER_SKILLS) {
                 intakelift.set_value(true);
-                if (skills_low_held >= 30) {
-                    intake.bottom_intake.move_velocity(-300);
+                if (skills_low_held >= 600) {
+                    intake.bottom_intake.move_velocity(-200);
                 } else {
-                    intake.bottom_intake.move_velocity(-400);
+                    intake.bottom_intake.move_velocity(-300);
                 }
                 if (firstPress) {
                     Task e([&]() {
@@ -450,6 +449,9 @@ void opcontrol() {
         // master.print(2, 0, "Drive: %.2f°C", averageTemperature);
         // pros::delay(1);
         // master.print(2,0,"Heading: %.2f", imu.get_heading());
+        // pros::delay(1);
+
+        // lcd::print(0, "t: %f b: %f", motor_get_temperature(TOP_INTAKE), motor_get_temperature(BOTTOM_INTAKE));
         // pros::delay(1);
     }
 }

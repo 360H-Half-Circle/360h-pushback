@@ -88,10 +88,8 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     //--------------1ST SECTION----------------//
     ///////////////////////////////////////////////
     Task matchloaderDelay([&](){
-        // while (front_dist.get_distance() > MLOAD_TARGET + 200) {
-        // }
-        // delay(700);
-        // matchloader.set_value(true);
+        delay(700);
+        matchloader.set_value(true);
     });
 
     chassis.moveToPoint(-64.5, 34, 5000, {.maxSpeed=70, .minSpeed=55});
@@ -129,6 +127,10 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     resetRobotPos(chassis, left_dist, "negative_x");
     resetRobotPos(chassis, front_dist, "positive_y");
 
+
+    delay(100000);
+
+
     chassis.moveToPoint(-20, 0, 1500, {.forwards=false});
     chassis.waitUntilDone();
     if (override_pressed()) return;
@@ -154,18 +156,18 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     //--------------MID GOAL----------------//
     ///////////////////////////////////////////////
     midgoal.set_value(false);
-    hoodBottom.set_value(true);
     delay(100);
+    hoodBottom.set_value(true);
     chassis.tank(-30, -30, true);
     intake.bottom_forwards();
     intake.top_intake.move_velocity(300);
-    delay(1250);
+    delay(1750);
     // chassis.turnToHeading(315, 500);
     // chassis.waitUntilDone();
 
     chassis.tank(0, 0, true);
     intake.top_intake.move_velocity(150);
-    delay(1500);
+    delay(1000);
 
     intake.stop_top();
     hoodBottom.set_value(false);
@@ -226,7 +228,7 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     ///////////////////////////////////////////////
     // score
     chassis.moveToPose(26.5, 49, 90, 1500, {.forwards=false, .maxSpeed=70, .minSpeed=30});
-    delay(1300);
+    delay(900);
     hood.set_value(false);
     chassis.waitUntilDone();
 
@@ -267,7 +269,7 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     // score
 
     chassis.moveToPoint(-24.5, 47, 1000, {.forwards=false, .maxSpeed=65});
-    delay(800);
+    delay(900);
     hood.set_value(false);
     chassis.waitUntilDone();
     if (override_pressed()) return;
