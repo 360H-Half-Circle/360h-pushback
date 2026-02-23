@@ -171,10 +171,10 @@ void autonomous() {
     // auton::sawp(chassis);
     // auton::seven_wing_right(chassis);
     // auton::seven_wing_left(chassis);
-    // auton::four_wing_left(chassis);
+    auton::four_wing_left(chassis);
     // auton::sawp_safe(chassis);
     // auton::nine_split_right(chassis);
-    auton::auton_skills(chassis);
+    // auton::auton_skills(chassis);
     // auton::seven_split_right(chassis);
     return;
 
