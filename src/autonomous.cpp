@@ -1080,7 +1080,7 @@ void auton::four_wing_left(lemlib::Chassis& chassis) {
     resetRobotPos(chassis, right_dist, "positive_y");
     chassis.setPose(lemlib::Pose(-27.5, -chassis.getPose().y, chassis.getPose().theta));
 
-    chassis.moveToPoint(-36,-40, 750, {.forwards = true, .minSpeed=30, .earlyExitRange=2}, false);
+    chassis.moveToPoint(-36,-39, 750, {.forwards = true, .minSpeed=30, .earlyExitRange=2}, false);
     intake.stop();
     chassis.turnToHeading(270, 300);
     chassis.waitUntilDone();
@@ -1090,13 +1090,8 @@ void auton::four_wing_left(lemlib::Chassis& chassis) {
 
     chassis.setBrakeMode(E_MOTOR_BRAKE_HOLD);
 
-    chassis.moveToPoint(-11,-40, 10000, {.forwards=false, .minSpeed=80, .earlyExitRange=1}, false);
+    chassis.moveToPoint(-11,-39, 10000, {.forwards=false, .minSpeed=80}, false);
     chassis.waitUntilDone();
-
-    // chassis.tank(20, 90, true);
-    // delay(5000);
-
-    chassis.swingToHeading(190, DriveSide::LEFT, 10000, {.maxSpeed=90});
 }
 
 void auton::nine_split_right(lemlib::Chassis& chassis) {
