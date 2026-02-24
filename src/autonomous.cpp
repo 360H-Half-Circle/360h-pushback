@@ -128,10 +128,6 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     resetRobotPos(chassis, left_dist, "negative_x");
     resetRobotPos(chassis, front_dist, "positive_y");
 
-
-    // delay(100000);
-
-
     chassis.moveToPoint(-20, 0, 1500, {.forwards=false});
     chassis.waitUntilDone();
     if (override_pressed()) return;
@@ -163,11 +159,9 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     intake.bottom_forwards();
     intake.top_intake.move_velocity(300);
     delay(1750);
-    // chassis.turnToHeading(315, 500);
-    // chassis.waitUntilDone();
 
     chassis.tank(0, 0, true);
-    intake.top_intake.move_velocity(100);
+    intake.top_intake.move_velocity(125);
     delay(1000);
 
     intake.stop_top();
@@ -181,7 +175,7 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     midgoal.set_value(true);
     // matchloader.set_value(true);
 
-    chassis.turnToHeading(270, 300);
+    chassis.turnToHeading(270, 500);
     chassis.waitUntilDone();
     if (override_pressed()) return;
 
@@ -329,7 +323,7 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     // distancePid(chassis, front_dist, CROSS_TARGET, 1000, 0.3);
     start_time = std::chrono::high_resolution_clock::now();
 
-    target = CROSS_TARGET;
+    target = CROSS_TARGET + 20;
     error = front_dist.get_distance() - target;
     while (abs(error) > 5) {
         auto current_time = std::chrono::high_resolution_clock::now();
@@ -389,10 +383,10 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     ///////////////////////////////////////////////
     intake.bottom_intake.move_velocity(-400);
     chassis.tank(0, 30, true);
-    delay(500);
-    intake.bottom_intake.move_velocity(-400);
+    delay(1000);
+    intake.bottom_intake.move_velocity(-200);
     intake.top_backwards();
-    delay(2000);
+    delay(1500);
 
     chassis.tank(-60, -60, true);
     delay(250);
@@ -541,7 +535,7 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     chassis.waitUntilDone();
     if (override_pressed()) return;
 
-    chassis.moveToPoint(-62.5, 12, 3000, {.maxSpeed=70, .minSpeed=60});
+    chassis.moveToPoint(-62.5, 11, 3000, {.maxSpeed=70, .minSpeed=60});
 }
 
 // util

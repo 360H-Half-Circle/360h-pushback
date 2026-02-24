@@ -132,24 +132,12 @@ float average_position(MotorGroup& group) {
 }
 
 void initialize() {
-    lcd::initialize();
-    // sec::init();
+    chassis.calibrate(true);
+    // delay(1000);
 
     intake.initialize();
-    chassis.calibrate(true);
-    delay(100);
-
-    // Task lemlib_print_task{[] {
-    //     // print pose
-    //     while (true) {
-    //         auto pose = chassis.getPose();
-            
-    //         lcd::print(1, "Y: %.2f in", pose.y);
-    //         pros::delay(1);
-    //         lcd::print(2, "Theta: %.2f deg", pose.theta);
-    //         pros::delay(100);
-    //     }
-    // }};
+    lcd::initialize();
+    sec::init();
 }
 
 void disabled() { }
@@ -171,10 +159,10 @@ void autonomous() {
     // auton::sawp(chassis);
     // auton::seven_wing_right(chassis);
     // auton::seven_wing_left(chassis);
-    auton::four_wing_left(chassis);
+    // auton::four_wing_left(chassis);
     // auton::sawp_safe(chassis);
     // auton::nine_split_right(chassis);
-    // auton::auton_skills(chassis);
+    auton::auton_skills(chassis);
     // auton::seven_split_right(chassis);
     return;
 
@@ -228,41 +216,6 @@ void opcontrol() {
     hood.set_value(true);
     wing.set_value(true);
     hoodBottom.set_value(false);
-
-    // hold_controls.emplace(E_CONTROLLER_DIGITAL_LEFT, std::make_pair([&](bool firstPress) {
-    //     midgoal.set_value(false);
-    //     delay(100);
-    //     chassis.tank(-30, -30, true);
-    //     intake.bottom_forwards();
-    //     // intake.bottom_forwards(90);
-    //     intake.top_intake.move_velocity(500);
-    //     delay(500);
-    //     chassis.tank(0, 0, true);
-    //     intake.top_intake.move_velocity(300);
-    //     delay(1850);
-    //     intake.top_intake.move_velocity(300);
-    //     delay(1000);
-    // },
-    // [&]() {
-
-    // }));
-
-    // hold_controls.emplace(E_CONTROLLER_DIGITAL_UP, std::make_pair([&](bool firstPress) {
-    //     intakelift.set_value(true);
-    //     delay(500);
-
-    //     intake.top_backwards();
-    //     intake.bottom_intake.move_velocity(-300);
-    //     chassis.tank(0, 30, true);
-    //     delay(500);
-    //     intake.bottom_intake.move_velocity(-370);
-    //     delay(1500);
-    //     intake.bottom_intake.move_velocity(-200);
-    //     delay(1000);
-    // },
-    // [&]() {
-
-    // }));
 
     hold_controls.emplace(E_CONTROLLER_DIGITAL_B, std::make_pair(
         [&](bool firstPress) {
@@ -353,8 +306,10 @@ void opcontrol() {
             hoodBottom.set_value(true);
             delay(50);
             if (IS_DRIVER_SKILLS) {
-                if (skills_down_held >= 40) {
+                if (skills_down_held > 80) {
                     intake.top_intake.move_velocity(100);
+                } else if (skills_down_held >= 40) {
+                    intake.top_intake.move_velocity(200);
                 } else {
                     intake.top_intake.move_velocity(300);
                 }  
@@ -382,6 +337,36 @@ void opcontrol() {
             chassis.tank(0, 0, true);
         }
     ));
+
+    Distance right_dist(RIGHT_DISTANCE_SENSOR);
+    Distance front_dist(FRONT_DISTANCE_SENSOR);
+
+    toggle_controls.emplace(E_CONTROLLER_DIGITAL_Y, [&]() {
+        if (!IS_DRIVER_SKILLS) return;
+        
+        resetRobotPos(chassis, right_dist, "negative_y");
+        chassis.setPose(lemlib::Pose(27.5, chassis.getPose().y, 90));
+        intake.top_forwards();
+        intake.bottom_forwards();
+        delay(100);
+
+        chassis.moveToPose(62.5, -12.5, 0, 1750, {.lead=0.3});
+        chassis.waitUntilDone();
+
+        hood.set_value(true);
+
+        intake.top_forwards();
+        intake.bottom_forwards();
+
+        Task matchloaderDelay2([&](){
+            delay(500);
+            matchloader.set_value(true);
+        });
+
+        chassis.moveToPoint(64.5, 40, 5000, {.maxSpeed=80, .minSpeed=65});
+        chassis.waitUntilDone();
+    });
+
 
     while (true) {
         float rightY = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);

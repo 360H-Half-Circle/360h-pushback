@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "4wl elims",
+    "project_name": "skills",
     "target": "v5",
     "templates": {
       "LemLib": {
@@ -298,7 +298,7 @@
       }
     },
     "upload_options": {
-      "description": "360H North Dakota Signature Code",
+      "description": "360H Code",
       "icon": "pizza",
       "slot": 1,
       "after": "screen"
