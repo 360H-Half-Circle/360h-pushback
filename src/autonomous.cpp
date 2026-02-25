@@ -89,7 +89,7 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     ///////////////////////////////////////////////
     Task matchloaderDelay([&](){
         // delay(700);
-        delay(300);
+        delay(400);
         matchloader.set_value(true);
     });
 
@@ -145,6 +145,8 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     chassis.turnToPoint(-12, 10, 200, {.forwards=false});
     chassis.waitUntilDone();
 
+    matchloader.set_value(true);
+
     chassis.moveToPoint(-12, 10, 750, {.forwards=false, .maxSpeed=80});
     chassis.waitUntilDone();
     if (override_pressed()) return;
@@ -166,7 +168,6 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
 
     intake.stop_top();
     hoodBottom.set_value(false);
-    matchloader.set_value(true);
 
     chassis.moveToPoint(-42.8, 48, 1200);
     chassis.waitUntilDone();
@@ -190,7 +191,7 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     if (override_pressed()) return;
 
     chassis.tank(30, 30, true);
-    shimmy(chassis, 850);
+    shimmy(chassis, 1000);
 
     intake.stop_top();
 
@@ -236,7 +237,7 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
 
     matchloader.set_value(true);
 
-    delay(2500);
+    delay(2000);
 
     chassis.tank(0, 0, true);
     resetRobotPos(chassis, left_dist, "positive_y");
@@ -254,7 +255,7 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     chassis.waitUntilDone();
     if (override_pressed()) return;
 
-    shimmy(chassis, 1500);
+    shimmy(chassis, 1750);
 
     resetRobotPos(chassis, left_dist, "positive_y");
 
@@ -383,7 +384,9 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     ///////////////////////////////////////////////
     intake.bottom_intake.move_velocity(-400);
     chassis.tank(0, 30, true);
-    delay(1000);
+    delay(250);
+    intake.top_backwards();
+    delay(750);
     intake.bottom_intake.move_velocity(-200);
     intake.top_backwards();
     delay(1500);
@@ -430,7 +433,7 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     if (override_pressed()) return;
 
     chassis.tank(30, 30, true);
-    shimmy(chassis, 1200);
+    shimmy(chassis, 1500);
 
     intake.stop_top();
 
@@ -493,7 +496,7 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     if (override_pressed()) return;
 
     chassis.tank(30, 30, true);
-    shimmy(chassis, 1250);
+    shimmy(chassis, 1500);
 
     intake.stop_top();
 
