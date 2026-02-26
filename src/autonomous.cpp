@@ -79,7 +79,7 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     wing.set_value(true);
     hoodBottom.set_value(false);
 
-    chassis.setPose(-62.8, -15.5, 0);
+    chassis.setPose(-49, 15.5, 90);
 
     intake.top_forwards();
     intake.bottom_forwards();
@@ -87,23 +87,21 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     ///////////////////////////////////////////////
     //--------------1ST SECTION----------------//
     ///////////////////////////////////////////////
-    Task matchloaderDelay([&](){
-        // bool negative = false;
-        // bool positive = false;
-        // while (true) {
-        //     if (imu.get_pitch() > 3) positive = true;
-        //     if (imu.get_pitch() < -3) negative = true;
 
-        //     if (negative && positive && abs(imu.get_pitch()) < 1) {
-        //         matchloader.set_value(true);
-        //         break;
-        //     }
-        // }
-        // delay(500);
-        // matchloader.set_value(false);
-    });
+    chassis.moveToPoint(-20, 26, 1000, {.forwards=true});
+    chassis.waitUntilDone();
+    if (override_pressed()) return;
 
-    odomLift.set_value(true);
+    delay(1000);
+
+    chassis.turnToPoint(-12, 12, 500, {.forwards=false});
+    chassis.waitUntilDone();
+
+    chassis.moveToPoint(-12, 12, 750, {.forwards=false, .maxSpeed=80});
+    chassis.waitUntilDone();
+
+
+    delay(10000);
 
     chassis.moveToPoint(-64.5, 34, 5000, {.maxSpeed=70, .minSpeed=65});
     chassis.waitUntilDone();
@@ -263,7 +261,7 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     });
 
     // matchload
-    chassis.moveToPoint(67.5, 45.5, 1500, {.maxSpeed=40});
+    chassis.moveToPoint(69.5, 45.5, 1500, {.maxSpeed=40});
     chassis.waitUntilDone();
     if (override_pressed()) return;
 
