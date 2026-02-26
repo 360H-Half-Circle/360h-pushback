@@ -139,8 +139,6 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     resetRobotPos(chassis, left_dist, "negative_x");
     resetRobotPos(chassis, front_dist, "positive_y");
 
-    delay(1000000);
-
     chassis.moveToPoint(-20, 0, 1500, {.forwards=false});
     chassis.waitUntilDone();
     if (override_pressed()) return;
@@ -333,7 +331,7 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
 
     odomLift.set_value(true);
 
-    chassis.moveToPoint(64.5, -40, 5000, {.maxSpeed=75, .minSpeed=75});
+    chassis.moveToPoint(64.5, -40, 5000, {.maxSpeed=70, .minSpeed=65});
     chassis.waitUntilDone();
     if (override_pressed()) return;
 
