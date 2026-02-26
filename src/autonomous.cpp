@@ -280,7 +280,9 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     });
 
     // matchload
-    chassis.moveToPoint(69.5, 45.5, 1500, {.maxSpeed=40});
+    chassis.moveToPoint(50, 45.5, 500, {.minSpeed=60});
+    chassis.waitUntilDone();
+    chassis.moveToPoint(69.5, 45.5, 750, {.maxSpeed=40});
     chassis.waitUntilDone();
     if (override_pressed()) return;
 
@@ -540,7 +542,9 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     // start matchloading
 
     // matchload
-    chassis.moveToPoint(-69.5, -46, 1500, {.maxSpeed=40});
+    chassis.moveToPoint(-50, -45.5, 500, {.minSpeed=60});
+    chassis.waitUntilDone();
+    chassis.moveToPoint(-69.5, -46, 750, {.maxSpeed=40});
     chassis.waitUntilDone();
     if (override_pressed()) return;
 
@@ -583,13 +587,13 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     intake.stop_top();
     intake.bottom_forwards();
 
-    chassis.moveToPose(-64, -12.5, 0, 1750, {.lead=0.3, .minSpeed=80});
+    chassis.moveToPose(-64, -12.5, 0, 1750, {.lead=0.3, .minSpeed=80, .earlyExitRange=1});
     chassis.waitUntilDone();
     if (override_pressed()) return;
 
     odomLift.set_value(true);
 
-    chassis.moveToPoint(-64, 16, 3000, {.maxSpeed=90, .minSpeed=90});
+    chassis.moveToPoint(-64, 16, 3000, {.maxSpeed=80, .minSpeed=80});
 }
 
 // util
