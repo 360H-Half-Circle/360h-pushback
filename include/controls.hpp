@@ -32,5 +32,6 @@
 #define RIGHT_DISTANCE_SENSOR 8
 
 #define PERP_TRACKING_WHEEL 13
+#define ODOM_LIFT 3
 
 using namespace pros;

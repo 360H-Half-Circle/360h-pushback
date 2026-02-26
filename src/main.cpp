@@ -137,7 +137,21 @@ void initialize() {
 
     intake.initialize();
     lcd::initialize();
-    sec::init();
+    // sec::init();
+    
+    pros::Task screen_task([&]() {
+        while (true) {
+            // print robot location to the brain screen
+            pros::lcd::print(0, "X: %f", chassis.getPose().x); // x
+            pros::lcd::print(1, "Y: %f", chassis.getPose().y); // y
+            pros::lcd::print(2, "Theta: %f", chassis.getPose().theta); // heading
+            pros::lcd::print(3, "Heading %f", imu.get_heading()); // heading
+            pros::lcd::print(4, "Pitch %f", imu.get_pitch()); // heading
+            pros::lcd::print(5, "Roll %f", imu.get_roll()); // heading
+            // delay to save resources
+            pros::delay(20);
+        }
+    });
 }
 
 void disabled() { }
@@ -191,6 +205,7 @@ void autonomous() {
 bool killcode = false;
 
 void opcontrol() {
+    return;
     // autonomous();
 
     Motor bottom_intake = Motor(-BOTTOM_INTAKE);
@@ -203,6 +218,7 @@ void opcontrol() {
     auto intakelift = ADIDigitalOut(LIFT_INTAKE);
     auto hood = ADIDigitalOut(HOOD_PORT);
     auto hoodBottom = ADIDigitalOut(HOOD_BOTTOM_PORT);
+    auto odomLift = ADIDigitalOut(ODOM_LIFT);
 
     std::unordered_map<controller_digital_e_t, std::function<void()>> toggle_controls;
     std::unordered_map<controller_digital_e_t, std::pair<std::function<void(bool)>, std::function<void()>>> hold_controls;
@@ -216,6 +232,7 @@ void opcontrol() {
     hood.set_value(true);
     wing.set_value(true);
     hoodBottom.set_value(false);
+    odomLift.set_value(true);
 
     hold_controls.emplace(E_CONTROLLER_DIGITAL_B, std::make_pair(
         [&](bool firstPress) {
@@ -364,7 +381,6 @@ void opcontrol() {
             chassis.tank(leftY, rightY, false);
         }
                                     
-
         if (master.get_digital(E_CONTROLLER_DIGITAL_L2)) {
             skills_down_held += 1;
         } else {
@@ -424,10 +440,6 @@ void opcontrol() {
         // pros::delay(1);
         // master.print(2, 0, "Drive: %.2f°C", averageTemperature);
         // pros::delay(1);
-        // master.print(2,0,"Heading: %.2f", imu.get_heading());
-        // pros::delay(1);
 
-        // lcd::print(0, "t: %f b: %f", motor_get_temperature(TOP_INTAKE), motor_get_temperature(BOTTOM_INTAKE));
-        // pros::delay(1);
     }
 }
