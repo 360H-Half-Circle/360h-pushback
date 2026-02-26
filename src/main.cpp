@@ -242,16 +242,16 @@ void opcontrol() {
         [&](bool firstPress) {
             if (IS_DRIVER_SKILLS) {
                 intakelift.set_value(true);
-                if (skills_low_held >= 600) {
-                    intake.bottom_intake.move_velocity(-200);
-                } else {
-                    intake.bottom_intake.move_velocity(-300);
-                }
                 if (firstPress) {
                     Task e([&]() {
+                        intake.bottom_intake.move_velocity(-200);
                         delay(500);
                         if (!master.get_digital(E_CONTROLLER_DIGITAL_DOWN)) return;
                         intake.top_backwards();
+                        intake.bottom_intake.move_velocity(-300);
+                        delay(500);
+                        if (!master.get_digital(E_CONTROLLER_DIGITAL_DOWN)) return;
+                        intake.bottom_intake.move_velocity(-200);
                     });
                 }
             } else {
@@ -341,38 +341,29 @@ void opcontrol() {
     Distance right_dist(RIGHT_DISTANCE_SENSOR);
     Distance front_dist(FRONT_DISTANCE_SENSOR);
 
-    toggle_controls.emplace(E_CONTROLLER_DIGITAL_Y, [&]() {
-        if (!IS_DRIVER_SKILLS) return;
-        
-        resetRobotPos(chassis, right_dist, "negative_y");
-        chassis.setPose(lemlib::Pose(27.5, chassis.getPose().y, 90));
-        intake.top_forwards();
-        intake.bottom_forwards();
-        delay(100);
+    bool limit_drive = false;
 
-        chassis.moveToPose(62.5, -12.5, 0, 1750, {.lead=0.3});
-        chassis.waitUntilDone();
-
-        hood.set_value(true);
-
-        intake.top_forwards();
-        intake.bottom_forwards();
-
-        Task matchloaderDelay2([&](){
-            delay(500);
-            matchloader.set_value(true);
-        });
-
-        chassis.moveToPoint(64.5, 40, 5000, {.maxSpeed=80, .minSpeed=65});
-        chassis.waitUntilDone();
-    });
-
+    hold_controls.emplace(E_CONTROLLER_DIGITAL_Y, std::make_pair(
+        [&](bool firstPress) {
+            limit_drive = true;
+        },
+        [&]() {
+            limit_drive = false;
+        }
+    ));
 
     while (true) {
         float rightY = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
         float leftY = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+
+        if (limit_drive) {
+            rightY = std::clamp(rightY, -65.0f, 65.0f);
+            leftY = std::clamp(leftY, -65.0f, 65.0f);
+            chassis.tank(leftY, rightY, true);
+        } else {
+            chassis.tank(leftY, rightY, false);
+        }
                                     
-        chassis.tank(leftY, rightY, false);
 
         if (master.get_digital(E_CONTROLLER_DIGITAL_L2)) {
             skills_down_held += 1;

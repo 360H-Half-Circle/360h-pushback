@@ -19,7 +19,7 @@ int sign(float value) {
     return value > 0 ? 1 : -1;
 }
 
-int CROSS_TARGET = 760;
+int CROSS_TARGET = 750;
 int MLOAD_TARGET = 1500;
 
 bool override_pressed() {
@@ -89,31 +89,30 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     ///////////////////////////////////////////////
     Task matchloaderDelay([&](){
         // delay(700);
-        delay(400);
+        delay(200);
         matchloader.set_value(true);
+        delay(500);
+        matchloader.set_value(false);
     });
 
-    chassis.moveToPoint(-64.5, 34, 5000, {.maxSpeed=80, .minSpeed=65});
+    chassis.moveToPoint(-64.5, 34, 5000, {.maxSpeed=75, .minSpeed=75});
     chassis.waitUntilDone();
     if (override_pressed()) return;
 
-    // // distancePid(chassis, front_dist, CROSS_TARGET, 1000, 0.5);
     auto start_time = std::chrono::high_resolution_clock::now();
 
-    int target = CROSS_TARGET+100;
+    int target = CROSS_TARGET;
     float error = front_dist.get_distance() - target;
     while (abs(error) > 5) {
         auto current_time = std::chrono::high_resolution_clock::now();
         std::chrono::duration<float> elapsed = current_time - start_time;
         
-        if (elapsed.count() * 1000.0f >= 1000) {
+        if (elapsed.count() * 1000.0f >= 2000) {
             break;
         }
 
         float power = error * 0.2;
-        // if (abs(power) < 15) {
-        //     power = sign(power) * 15;
-        // }
+
         chassis.tank(power, power, true);
         error = front_dist.get_distance() - target;
 
@@ -163,7 +162,7 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     delay(1750);
 
     chassis.tank(0, 0, true);
-    intake.top_intake.move_velocity(125);
+    intake.top_intake.move_velocity(300);
     delay(1000);
 
     intake.stop_top();
@@ -237,7 +236,7 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
 
     matchloader.set_value(true);
 
-    delay(2000);
+    delay(1500);
 
     chassis.tank(0, 0, true);
     resetRobotPos(chassis, left_dist, "positive_y");
@@ -315,6 +314,8 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
         // while (front_dist.get_distance() > MLOAD_TARGET - 200) {
         // }
         matchloader.set_value(true);
+        delay(500);
+        matchloader.set_value(false);
     });
 
     chassis.moveToPoint(64.5, -40, 5000, {.maxSpeed=80, .minSpeed=65});
@@ -324,7 +325,7 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     // distancePid(chassis, front_dist, CROSS_TARGET, 1000, 0.3);
     start_time = std::chrono::high_resolution_clock::now();
 
-    target = CROSS_TARGET + 20;
+    target = CROSS_TARGET;
     error = front_dist.get_distance() - target;
     while (abs(error) > 5) {
         auto current_time = std::chrono::high_resolution_clock::now();
@@ -382,14 +383,14 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     ///////////////////////////////////////////////
     //--------------LOW GOAL----------------//
     ///////////////////////////////////////////////
-    intake.bottom_intake.move_velocity(-400);
-    chassis.tank(0, 30, true);
-    delay(250);
-    intake.top_backwards();
-    delay(750);
     intake.bottom_intake.move_velocity(-200);
+    delay(500);
+    chassis.tank(0, 30, true);
     intake.top_backwards();
-    delay(1500);
+    intake.bottom_intake.move_velocity(-300);
+    delay(500);
+    intake.bottom_intake.move_velocity(-200);
+    delay(2000);
 
     chassis.tank(-60, -60, true);
     delay(250);
