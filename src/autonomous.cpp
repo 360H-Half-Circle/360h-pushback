@@ -613,7 +613,7 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
             std::chrono::high_resolution_clock::now() - skills_start_time
         ).count();
     
-    if (elapsed_ms < 57000) {
+    if (elapsed_ms < 56000) {
         // HOOD auto
         chassis.moveToPoint(chassis.getPose().x - 4, chassis.getPose().y, 500, {.minSpeed=100});
         chassis.waitUntilDone();
@@ -661,7 +661,7 @@ void auton::auton_skills(lemlib::Chassis& chassis) {
     });
 
     // CROSS BARRIER
-    chassis.tank(75, 80, true);
+    chassis.tank(65, 75, true);
     delay(5000);
 }
 

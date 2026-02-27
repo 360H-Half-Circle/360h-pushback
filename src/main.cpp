@@ -170,13 +170,13 @@ void competition_initialize() {}
 */
 
 void autonomous() {
-    // auton::sawp(chassis);
+    auton::sawp(chassis);
     // auton::seven_wing_right(chassis);
     // auton::seven_wing_left(chassis);
     // auton::four_wing_left(chassis);
     // auton::sawp_safe(chassis);
     // auton::nine_split_right(chassis);
-    auton::auton_skills(chassis);
+    // auton::auton_skills(chassis);
     // auton::seven_split_right(chassis);
     return;
 
@@ -369,6 +369,33 @@ void opcontrol() {
         }
     ));
 
+    toggle_controls.emplace(E_CONTROLLER_DIGITAL_LEFT, [&]() {
+        double battery = battery_get_capacity();
+
+        auto drivetrainMotors = {L_DRIVE_FRONT, L_DRIVE_MID, L_DRIVE_BACK, R_DRIVE_FRONT, R_DRIVE_MID, R_DRIVE_BACK};
+
+        double temperatureSum = 0.0;
+        double hotspot = 0.0;
+        int hotspotPort = 0;
+
+        for (int port : drivetrainMotors) {
+            double currentTemp = motor_get_temperature(port);
+
+            temperatureSum += currentTemp;
+            
+            if (hotspot < currentTemp) {
+                hotspot = currentTemp;
+                hotspotPort = port;
+            }
+        }
+
+        double averageTemperature = temperatureSum / drivetrainMotors.size();
+
+        temperatureSum = 0.0;
+
+        master.print(0, 0, "T%.0f B%.0f D: %.0f", top_intake.get_temperature(), bottom_intake.get_temperature(), averageTemperature);
+    });
+
     while (true) {
         float rightY = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
         float leftY = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
@@ -410,36 +437,5 @@ void opcontrol() {
         }
 
         intake.update();
-
-        double battery = battery_get_capacity();
-
-        auto drivetrainMotors = {L_DRIVE_FRONT, L_DRIVE_MID, L_DRIVE_BACK, R_DRIVE_FRONT, R_DRIVE_MID, R_DRIVE_BACK};
-
-        double temperatureSum = 0.0;
-        double hotspot = 0.0;
-        int hotspotPort = 0;
-
-        for (int port : drivetrainMotors) {
-            double currentTemp = motor_get_temperature(port);
-
-            temperatureSum += currentTemp;
-            
-            if (hotspot < currentTemp) {
-                hotspot = currentTemp;
-                hotspotPort = port;
-            }
-        }
-
-        double averageTemperature = temperatureSum / drivetrainMotors.size();
-
-        temperatureSum = 0.0;
-
-        master.print(0, 0, "Top: %.2f°C", top_intake.get_temperature());
-        pros::delay(1);
-        master.print(1, 0, "Bottom: %.2f°C", bottom_intake.get_temperature());
-        pros::delay(1);
-        master.print(2, 0, "Drive: %.2f°C", averageTemperature);
-        pros::delay(1);
-
     }
 }
