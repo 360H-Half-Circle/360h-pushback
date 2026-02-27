@@ -889,6 +889,9 @@ void auton::sawp(lemlib::Chassis& chassis) {
     chassis.waitUntilDone();
     matchloader.set_value(false);
 
+    chassis.turnToPoint(-48.5, 46.5, 300);
+    chassis.waitUntilDone();
+
     chassis.moveToPoint(-48.5, 46.5, 1000);
     chassis.waitUntilDone();
 
@@ -923,7 +926,9 @@ void auton::sawp(lemlib::Chassis& chassis) {
     intake.bottom_forwards();
     intake.top_forwards();
 
-    chassis.moveToPoint(-67.5, 46.5, 1000, {.maxSpeed=50});
+    chassis.moveToPoint(-50.5, 46.5, 500, {.minSpeed=90});
+    chassis.waitUntilDone();
+    chassis.moveToPoint(-69.5, 46.5, 500, {.maxSpeed=50});
     chassis.waitUntilDone();
 
     chassis.tank(30, 30, true);
