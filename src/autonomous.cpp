@@ -887,6 +887,7 @@ void auton::sawp(lemlib::Chassis& chassis) {
     });
     chassis.moveToPoint(-26.5, 24.5, 1000);
     chassis.waitUntilDone();
+    matchloader.set_value(false);
 
     chassis.moveToPoint(-48.5, 46.5, 1000);
     chassis.waitUntilDone();
@@ -908,6 +909,7 @@ void auton::sawp(lemlib::Chassis& chassis) {
     intake.bottom_forwards();
 
     chassis.tank(-60, -60, true);
+    matchloader.set_value(true);
     delay(1000);
 
     chassis.setPose(lemlib::Pose(-27.5, chassis.getPose().y, chassis.getPose().theta));
@@ -925,7 +927,7 @@ void auton::sawp(lemlib::Chassis& chassis) {
     chassis.waitUntilDone();
 
     chassis.tank(30, 30, true);
-    delay(300); 
+    delay(350); 
 
     resetRobotPos(chassis, right_dist, "positive_y");
 
