@@ -170,13 +170,13 @@ void competition_initialize() {}
 */
 
 void autonomous() {
-    auton::sawp(chassis);
+    // auton::sawp(chassis);
     // auton::seven_wing_right(chassis);
     // auton::seven_wing_left(chassis);
     // auton::four_wing_left(chassis);
     // auton::sawp_safe(chassis);
     // auton::nine_split_right(chassis);
-    // auton::auton_skills(chassis);
+    auton::auton_skills(chassis);
     // auton::seven_split_right(chassis);
     return;
 
@@ -265,10 +265,10 @@ void opcontrol() {
                         delay(500);
                         if (!master.get_digital(E_CONTROLLER_DIGITAL_DOWN)) return;
                         intake.top_backwards();
-                        intake.bottom_intake.move_velocity(-300);
-                        delay(500);
-                        if (!master.get_digital(E_CONTROLLER_DIGITAL_DOWN)) return;
                         intake.bottom_intake.move_velocity(-200);
+                        delay(1500);
+                        if (!master.get_digital(E_CONTROLLER_DIGITAL_DOWN)) return;
+                        intake.bottom_intake.move_velocity(-150);
                     });
                 }
             } else {
@@ -323,13 +323,7 @@ void opcontrol() {
             hoodBottom.set_value(true);
             delay(50);
             if (IS_DRIVER_SKILLS) {
-                if (skills_down_held > 80) {
-                    intake.top_intake.move_velocity(100);
-                } else if (skills_down_held >= 40) {
-                    intake.top_intake.move_velocity(200);
-                } else {
-                    intake.top_intake.move_velocity(300);
-                }  
+                intake.top_intake.move_velocity(100);
             } else intake.top_forwards();
             intake.bottom_forwards();
             hood.set_value(true);
