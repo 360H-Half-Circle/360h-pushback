@@ -205,7 +205,7 @@ void autonomous() {
 bool killcode = false;
 
 void opcontrol() {
-    return;
+    // return;
     // autonomous();
 
     Motor bottom_intake = Motor(-BOTTOM_INTAKE);
@@ -374,8 +374,8 @@ void opcontrol() {
         float leftY = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
 
         if (limit_drive) {
-            rightY = std::clamp(rightY, -65.0f, 65.0f);
-            leftY = std::clamp(leftY, -65.0f, 65.0f);
+            rightY = std::clamp(rightY, -40.0f, 40.0f);
+            leftY = std::clamp(leftY, -40.0f, 40.0f);
             chassis.tank(leftY, rightY, true);
         } else {
             chassis.tank(leftY, rightY, false);
@@ -434,12 +434,12 @@ void opcontrol() {
 
         temperatureSum = 0.0;
 
-        // master.print(0, 0, "Top: %.2f°C", top_intake.get_temperature());
-        // pros::delay(1);
-        // master.print(1, 0, "Bottom: %.2f°C", bottom_intake.get_temperature());
-        // pros::delay(1);
-        // master.print(2, 0, "Drive: %.2f°C", averageTemperature);
-        // pros::delay(1);
+        master.print(0, 0, "Top: %.2f°C", top_intake.get_temperature());
+        pros::delay(1);
+        master.print(1, 0, "Bottom: %.2f°C", bottom_intake.get_temperature());
+        pros::delay(1);
+        master.print(2, 0, "Drive: %.2f°C", averageTemperature);
+        pros::delay(1);
 
     }
 }
