@@ -266,9 +266,9 @@ void opcontrol() {
                         if (!master.get_digital(E_CONTROLLER_DIGITAL_DOWN)) return;
                         intake.top_backwards();
                         intake.bottom_intake.move_velocity(-200);
-                        delay(1500);
+                        delay(1650);
                         if (!master.get_digital(E_CONTROLLER_DIGITAL_DOWN)) return;
-                        intake.bottom_intake.move_velocity(-150);
+                        intake.bottom_intake.move_velocity(-120);
                     });
                 }
             } else {
@@ -317,13 +317,24 @@ void opcontrol() {
         }
     ));
 
+    bool no_move = false;
     hold_controls.emplace(E_CONTROLLER_DIGITAL_L2, std::make_pair(
         [&](bool firstPress) {
             midgoal.set_value(false);
             hoodBottom.set_value(true);
             delay(50);
             if (IS_DRIVER_SKILLS) {
-                intake.top_intake.move_velocity(100);
+                if (firstPress) {
+                    Task e([&]() {
+                        intake.top_intake.move_velocity(250);
+                        chassis.tank(-25, -25, true);
+                        no_move = true;
+                        delay(1750);
+                        no_move = false;
+                        if (!master.get_digital(E_CONTROLLER_DIGITAL_DOWN)) return;
+                        intake.top_intake.move_velocity(150);
+                    });
+                }
             } else intake.top_forwards();
             intake.bottom_forwards();
             hood.set_value(true);
@@ -335,6 +346,8 @@ void opcontrol() {
             midgoal.set_value(true);
             hood.set_value(true);
             hoodBottom.set_value(false);
+            chassis.tank(0, 0, true);
+            no_move = false;
 
             skills_down_held = 0;
         }
@@ -394,11 +407,12 @@ void opcontrol() {
         float rightY = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
         float leftY = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
 
+        if (abs(rightY) > 3 || abs(leftY) > 3) no_move = false;
         if (limit_drive) {
             rightY = std::clamp(rightY, -40.0f, 40.0f);
             leftY = std::clamp(leftY, -40.0f, 40.0f);
             chassis.tank(leftY, rightY, true);
-        } else {
+        } else if (!no_move) {
             chassis.tank(leftY, rightY, false);
         }
                                     
