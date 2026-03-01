@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "w skills w/ gang",
+    "project_name": "w skills w gang",
     "target": "v5",
     "templates": {
       "LemLib": {

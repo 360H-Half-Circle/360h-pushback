@@ -174,9 +174,11 @@ void autonomous() {
     // auton::seven_wing_right(chassis);
     // auton::seven_wing_left(chassis);
     // auton::four_wing_left(chassis);
+    // auton::four_wing_right(chassis);
     // auton::sawp_safe(chassis);
     // auton::nine_split_right(chassis);
     auton::auton_skills(chassis);
+    // auton::seven_split_left(chassis);
     // auton::seven_split_right(chassis);
     return;
 
@@ -322,11 +324,11 @@ void opcontrol() {
         [&](bool firstPress) {
             midgoal.set_value(false);
             hoodBottom.set_value(true);
-            delay(50);
+            delay(200);
             if (IS_DRIVER_SKILLS) {
                 if (firstPress) {
                     Task e([&]() {
-                        intake.top_intake.move_velocity(250);
+                        intake.top_intake.move_velocity(200);
                         chassis.tank(-25, -25, true);
                         no_move = true;
                         delay(1750);
